@@ -1,0 +1,147 @@
+<style>
+  .tar{
+    text-align: right;
+  }
+  .tac{
+    text-align: center;
+  }
+</style>
+<button type="button" (click)="Novo()"   [style.display]="bLista ? 'block' : 'none'">Novo</button>
+<button type="button" (click)="bLista=true; bForm=false" [style.display]="!bLista ? 'block' : 'none'">Voltar</button>
+
+<div class="fade-in" [style.display]="bForm ? 'block' : 'none'">
+  <c-card class="mb-4">
+    <c-card-header>
+      FORM
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="placa">Placa: </label>
+        </div>
+        <div class="col-sm-3">
+          <input cFormControl
+              disabled="disabled"
+              [style.display]="bUpdate ? 'block' : 'none'"
+               id="placa"
+               type="text"
+               (change)="SetBtnSave()"
+               [(ngModel)]="frm.placa"
+        />
+        <input cFormControl
+            [style.display]="!bUpdate ? 'block' : 'none'"
+             id="placa"
+             type="text"
+             (change)="SetBtnSave()"
+             [(ngModel)]="frm.placa"
+      />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="veiculo">Veículo: </label>
+        </div>
+        <div class="col-sm-3">
+          <input cFormControl
+                 id="veiculo"
+                 type="text"
+                 (change)="SetBtnSave()"
+                 [(ngModel)]="frm.veiculo"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          &nbsp; 
+        </div>
+        <div class="col-sm-3">
+          <button type="button" [style.display]="!bFrmDisabled ? 'block' : 'none'" class="btn btn-primary mb-3" (click)="Salvar()">Salvar</button>
+          <button type="button" [style.display]="bFrmDisabled ? 'block' : 'none'" ng-disabled="bFrmDisabled" class="btn btn-primary mb-3" disabled>Salvar</button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in" [style.display]="bLista ? 'block' : 'none'">
+  <c-card class="mb-4">
+    <c-card-header>
+      Automóveis 
+      <div class="row" [style.display]="msgSaved != '' ? 'block' : 'none'">
+        - {{msgSaved}}
+      </div>
+    </c-card-header>
+    <c-card-body>
+      Pesquisa:<br>
+      <input class="form-control form-control-sm" [(ngModel)]="req.ValFilter" (change)="Search()" type="text" placeholder="Insira o termo de pesquisa" aria-label=".form-control-sm example"><br>
+      <table class="table table-striped">
+        <tr>
+          <th><span (click)="SetOrder('placa')">Placa</span></th>
+          <th><span (click)="SetOrder('veiculo')">Veículo</span></th>
+          <th>Ação</th>
+        </tr>
+        <tr *ngFor ="let item of lista">
+          <td>{{item.placa}}</td>
+          <td>{{item.veiculo}}</td>
+          <td nowrap>
+            <button type="button" cButton color="primary" (click)="SetFrmUpdate(item)">Editar</button>
+            <button type="button" cButton color="secondary" (click)="SetFrmDelete(item)">Apagar</button>
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td nowrap>
+            Registros: 
+            <select [(ngModel)]="req.Rows" (change)="SetRows()">
+              <option *ngFor="let opt of selrows" value="{{opt.val}}">{{opt.txt}}</option>
+            </select>
+          </td>
+          <td style="width: 50px;">&nbsp;</td>
+          <td nowrap>
+            <button type="button" ng-disabled="disFirts" (click)="SetSt()">|<</button>
+            <button type="button" ng-disabled="disFirts" (click)="Prev()"><</button>
+          </td>
+          <td>
+            <select [(ngModel)]="req.Page" (change)="Lista()">
+              <option *ngFor="let opt of selpages" value="{{opt}}">{{opt}} página</option>
+            </select>
+          </td>
+          <td nowrap>
+            <button type="button" ng-disabled="disLast" (click)="Next()">></button>
+            <button type="button" ng-disabled="disLast" (click)="SetLst()">>|</button>
+          </td>
+          <td style="width: 50px;">&nbsp;</td>
+          <td nowrap>
+            <div [style.display]="ttRows2 > 0 ? 'block' : 'none'">Mostrando registros de {{lblRowStart}} até {{lblRowLast}} de {{ttRows2}}.</div>
+            <div [style.display]="ttRows2 == 0 ? 'block' : 'none'">Nenhum registro.</div>
+          </td>
+        </tr>
+      </table>
+    </c-card-body>
+  </c-card>
+</div>
+
+
+<c-modal id="liveDemoModal" [visible]="bConfirmaDelete" (visibleChange)="handleLiveDemoChange($event)">
+  <c-modal-header>
+    <h5 cModalTitle>Apagar automóvel.</h5>
+    <button (click)="toggleLiveDemo(bConfirmaDelete)" cButtonClose></button>
+  </c-modal-header>
+  <c-modal-body>
+    <div class="row">
+      <div class="col-sm-2"><b>Placa:</b></div>
+      <div class="col-sm-10">{{frmDel.placa}}</div>
+    </div>
+    <div class="row">
+      <div class="col-sm-2"><b>Veículo:</b></div>
+      <div class="col-sm-10">{{frmDel.veiculo}}</div>
+    </div>
+  </c-modal-body>
+  <c-modal-footer>
+    <button cButton color="primary" (click)="Apagar(frmDel)">Sim</button>
+    <button (click)="toggleLiveDemo(bFormDel)" cButton color="secondary">
+      Não
+    </button>    
+  </c-modal-footer>
+</c-modal>

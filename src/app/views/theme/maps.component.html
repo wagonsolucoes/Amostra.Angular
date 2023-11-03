@@ -1,0 +1,49 @@
+<h1 class="text-center">Angular Google Maps Drawing Manager</h1>
+<ul>
+  'POLYGON ((
+  <div *ngFor="let p of polygons[0]; let i = index">
+    {{ p.lat }} {{ p.lng }},
+  </div>
+  ', 0);
+  
+<div [style.position]="'relative'">
+  <div
+    *ngIf="polygons.length"
+    (click)="onDeleteDrawing()"
+    [ngStyle]="deleteIconStyle"
+    title='Delete shape'>
+  </div>
+
+  <agm-map
+    [latitude]="lat"
+    [longitude]="lng"
+    [zoom]="zoom"
+    [disableDefaultUI]="false"
+    [zoomControl]="false"
+    (mapReady)="onLoadMap($event)"
+    [agmDrawingManager]="drawing">
+
+  <agm-drawing-manager
+    #drawing="agmDrawingManager"
+    [drawingMode]="drawingMode"
+    (overlayComplete)="onOverlayComplete($event)"
+    [drawingControlOptions]="drawingControlOptions"
+    [polygonOptions]="polygonOptions">
+  </agm-drawing-manager>
+
+    <agm-polygon
+      *ngFor="let iterator of polygons; index as i"
+      (polyMouseDown)="onClickPolygon(i)"
+      (polyMouseUp)="onEditPolygon(i)"
+      (polyDragEnd)="onEditPolygon(i)"
+      [fillOpacity]="polygonOptions.fillOpacity"
+      [fillColor]="polygonOptions.fillColor"
+      [strokeColor]="polygonOptions.strokeColor"
+      [strokeWeight]="polygonOptions.strokeWeight"
+      [polyDraggable]="polygonOptions.draggable"
+      [editable]="polygonOptions.editable"
+      [paths]="iterator">
+    </agm-polygon>
+
+</agm-map>
+</div>

@@ -1,0 +1,28 @@
+<div class="fade-in">  
+  <c-alert [(visible)]="bDanger"
+         [dismissible]="bDismissible"
+         color="danger"
+         fade>
+        {{msgErro}}
+  </c-alert>
+  <c-card class="mb-4">
+    <c-card-header>
+      Login
+    </c-card-header>
+    <c-card-body>
+      <div class="container text-center" style="width: 360px !important;">
+        <div class="row">
+          <div class="col">
+            <input class="form-control form-control-sm" [(ngModel)]="req.Username" style="width: 100px !important;" aria-label=".form-control-sm example" type="text" placeholder="Usuário">
+          </div>
+          <div class="col">
+            <input class="form-control form-control-sm" [(ngModel)]="req.Password" style="width: 100px !important;" aria-label=".form-control-sm example" type="password" placeholder="Senha">
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-sm btn-primary" (click)="Logar()">Logar</button>
+          </div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>

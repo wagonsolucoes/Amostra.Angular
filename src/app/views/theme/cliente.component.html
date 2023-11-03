@@ -1,0 +1,143 @@
+<style>
+  .tar{
+    text-align: right;
+  }
+  .tac{
+    text-align: center;
+  }
+</style>
+<button type="button" (click)="Novo()"   [style.display]="bLista && !bConfirmaDelete ? 'block' : 'none'">Novo</button>
+<button type="button" (click)="bLista=true; bListaAuto=false; bForm=false"   [style.display]="!bLista && !bConfirmaDelete ? 'block' : 'none'">Voltar</button>
+
+<div class="fade-in" [style.display]="bForm && !bConfirmaDelete ? 'block' : 'none'">
+  <c-card class="mb-4">
+    <c-card-header>
+      FORM 
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtCpf">Cpf: </label>
+        </div>
+        <div class="col-sm-3">
+          <input cFormControl
+              disabled="disabled"
+              [style.display]="bUpdate ? 'block' : 'none'"
+               id="txtCpf"
+               type="email"
+               (change)="SetBtnSave()"
+               [(ngModel)]="frm.cpfCnpj"
+        />
+        <input cFormControl
+            [style.display]="!bUpdate ? 'block' : 'none'"
+             id="txtCpf"
+             type="email"
+             (change)="SetBtnSave()"
+             [(ngModel)]="frm.cpfCnpj"
+      />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtNome">Nome: </label>
+        </div>
+        <div class="col-sm-3">
+          <input cFormControl
+                 id="txtNome"
+                 type="email"
+                 (change)="SetBtnSave()"
+                 [(ngModel)]="frm.nome"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="selEstado">Estado: </label>  
+        </div>
+        <div class="col-sm-3">
+          <select id="selEstado" [(ngModel)]="frm.uf" (change)="SetBtnSave()">
+            <option *ngFor="let opt of selEstados" value="{{opt.sigla}}">{{opt.sigla}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          &nbsp; 
+        </div>
+        <div class="col-sm-3">
+          <button type="button" [style.display]="!bFrmDisabled ? 'block' : 'none'" class="btn btn-primary mb-3" (click)="Salvar()">Salvar</button>
+          <button type="button" [style.display]="bFrmDisabled ? 'block' : 'none'" ng-disabled="bFrmDisabled" class="btn btn-primary mb-3" disabled>Salvar</button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in" [style.display]="bLista && !bConfirmaDelete ? 'block' : 'none'">
+  <c-card class="mb-4">
+    <c-card-header>
+      Clientes 
+      <div class="row" [style.display]="msgSaved != '' ? 'block' : 'none'">
+        - {{msgSaved}}
+      </div>
+    </c-card-header>
+    <c-card-body>
+      Pesquisa:<br>
+      <input class="form-control form-control-sm" [(ngModel)]="req.ValFilter" (change)="Search()" type="text" placeholder="Insira o termo de pesquisa" aria-label=".form-control-sm example"><br>
+      <table class="table table-striped">
+        <tr>
+          <th><span (click)="SetOrder('CpfCnpj')">Cpf/Cnpj</span></th>
+          <th><span (click)="SetOrder('Nome')">Nome</span></th>
+          <th><span (click)="SetOrder('Bairro')">Estado</span></th>
+          <th><span (click)="SetOrder('Localidade')">Estado</span></th>
+          <th><span (click)="SetOrder('Uf')">Estado</span></th>
+          <th><span (click)="SetOrder('Email')">Estado</span></th>
+          <th><span (click)="SetOrder('Telefone')">Estado</span></th>
+          <th>Ação</th>
+        </tr>
+        <tr *ngFor ="let item of lista">
+          <td>{{item.cpfCnpj}}</td>
+          <td>{{item.nome}}</td>
+          <td>{{item.bairro}}</td>
+          <td>{{item.localidade}}</td>
+          <td>{{item.uf}}</td>
+          <td>{{item.email}}</td>
+          <td>{{item.telefone}}</td>
+          <td nowrap>
+            <button type="button" cButton color="primary" (click)="SetFrmUpdate(item)">Editar</button>
+            <button type="button" cButton color="secondary" (click)="SetFrmDelete(item)">Apagar</button>
+          </td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td nowrap>
+            Registros: 
+            <select [(ngModel)]="req.Rows" (change)="SetRows()">
+              <option *ngFor="let opt of selrows" value="{{opt.val}}">{{opt.txt}}</option>
+            </select>
+          </td>
+          <td style="width: 50px;">&nbsp;</td>
+          <td nowrap>
+            <button type="button" ng-disabled="disFirts" (click)="SetSt()">|<</button>
+            <button type="button" ng-disabled="disFirts" (click)="Prev()"><</button>
+          </td>
+          <td>
+            <select [(ngModel)]="req.Page" (change)="Lista()">
+              <option *ngFor="let opt of selpages" value="{{opt}}">{{opt}} página</option>
+            </select>
+          </td>
+          <td nowrap>
+            <button type="button" ng-disabled="disLast" (click)="Next()">></button>
+            <button type="button" ng-disabled="disLast" (click)="SetLst()">>|</button>
+          </td>
+          <td style="width: 50px;">&nbsp;</td>
+          <td nowrap>
+            <div [style.display]="ttRows2 > 0 ? 'block' : 'none'">Mostrando registros de {{lblRowStart}} até {{lblRowLast}} de {{ttRows2}}.</div>
+            <div [style.display]="ttRows2 == 0 ? 'block' : 'none'">Nenhum registro.</div>
+          </td>
+        </tr>
+      </table>
+    </c-card-body>
+  </c-card>
+</div>
