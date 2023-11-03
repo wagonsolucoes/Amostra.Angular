@@ -1,3 +1,7 @@
+1 - npm install --force
+2 - npm run start
+
+
 [![@coreui angular](https://img.shields.io/badge/@coreui%20-angular-lightgrey.svg?style=flat-square)](https://github.com/coreui/angular)
 [![npm-coreui-angular-next][npm-coreui-angular-badge-next]][npm-coreui-angular]
 [![NPM downloads][npm-coreui-angular-download]][npm-coreui-angular]  
