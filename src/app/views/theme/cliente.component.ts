@@ -7,6 +7,8 @@ import { ClienteService } from '../../services/cliente.service';
 import { RequestListInterface } from '../../interfaces/RequestListInterface';
 import { ResponseCliente } from '../../interfaces/ResponseCliente';
 import { PagSelRows } from '../../interfaces/PagSelRows'
+import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
+
 
 @Component({
   templateUrl: 'cliente.component.html'
@@ -19,6 +21,9 @@ export class ClienteComponent implements OnInit {
     private clienteService: ClienteService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
+    private fb: FormBuilder,
+    private fg: FormGroup,
+    private va: Validators
   ) {
   }
   //teste:string="";
@@ -137,13 +142,12 @@ export class ClienteComponent implements OnInit {
   
   Lista(){
     this.clienteService.Lista(this.req).subscribe((res) => {
-      //debugger
+      
       this.lista = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
     })
   }
-
   
   SetRows(){
     var page = parseInt(this.req.Page);
@@ -153,8 +157,7 @@ export class ClienteComponent implements OnInit {
     this.Lista();
   }
 
-  PopulaSelPages(ttRows:any){
-    //debugger
+  PopulaSelPages(ttRows:any){    
     var r = parseInt(this.req.Rows);
     this.ttRows = r;
     var tt = Math.round(ttRows / r);
@@ -285,11 +288,12 @@ export class ClienteComponent implements OnInit {
     }
   }
 
-  Novo(){
+  SetFrmInsert(){
     this.frm = {} as ClienteViewModel;
-    this.bLista=false; 
-    this.bForm=true;    
-    this.bUpdate=false;
+    this.bForm=true;
+    this.bConfirmaDelete=false;
+    this.bUpdate=true;
+    this.bLista=false;
   }
 
   Salvar(){
@@ -335,7 +339,7 @@ export class ClienteComponent implements OnInit {
         this.startTimer()
       }
       else{
-        //////debugger
+        ////
       }
     })
   }
@@ -354,7 +358,7 @@ export class ClienteComponent implements OnInit {
         this.startTimer()
       }
       else{
-        ////debugger
+        //
       }
     })
   }
@@ -380,7 +384,7 @@ export class ClienteComponent implements OnInit {
           this.startTimer()
         }
         else{
-          ////debugger
+          //
         }
       })
     }
