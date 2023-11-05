@@ -16,17 +16,9 @@
     </c-card-header>
     <c-card-body>
       <div class="row">
-        <div class="col-sm-1 tar"></div>
+        <div class="col-sm-1 tar">Tipo: </div>
         <div class="col-sm-3">
-          <!--
-          <c-form-check>
-            <input cFormCheckInput type="radio" value="one" name="flexRadioDefault" />
-            <label cFormCheckLabel>Default radio</label>
-          </c-form-check>
-          <c-form-check>
-            <input cFormCheckInput type="radio" value="two" name="flexRadioDefault" checked/>
-            <label cFormCheckLabel>Checked radio</label>
-          </c-form-check>-->
+            <input type="radio"
         </div>
         <div class="col-sm-1 tar">
           <label cLabel for="txtCpf">Cpf: </label>
@@ -38,14 +30,14 @@
                id="txtCpf"
                type="email"
                (change)="SetBtnSave()"
-               [(ngModel)]="frm.cpfCnpj"
+               [(ngModel)]="frm.documento"
         />
         <input cFormControl
             [style.display]="!bUpdate ? 'block' : 'none'"
              id="txtCpf"
              type="email"
              (change)="SetBtnSave()"
-             [(ngModel)]="frm.cpfCnpj"
+             [(ngModel)]="frm.documento"
       />
         </div>
       </div>
@@ -98,23 +90,25 @@
       <input class="form-control form-control-sm" [(ngModel)]="req.ValFilter" (change)="Search()" type="text" placeholder="Insira o termo de pesquisa" aria-label=".form-control-sm example"><br>
       <table class="table table-striped">
         <tr>
-          <th><span (click)="SetOrder('CpfCnpj')">Cpf/Cnpj</span></th>
-          <th><span (click)="SetOrder('Nome')">Nome</span></th>
-          <th><span (click)="SetOrder('Bairro')">Estado</span></th>
-          <th><span (click)="SetOrder('Localidade')">Estado</span></th>
-          <th><span (click)="SetOrder('Uf')">Estado</span></th>
-          <th><span (click)="SetOrder('Email')">Estado</span></th>
-          <th><span (click)="SetOrder('Telefone')">Estado</span></th>
+          <th><span (click)="SetOrder('documento')">Cpf/Cnpj</span></th>
+          <th><span (click)="SetOrder('nome')">Nome</span></th>
+          <th><span (click)="SetOrder('bairro')">Estado</span></th>
+          <th><span (click)="SetOrder('municipio')">Estado</span></th>
+          <th><span (click)="SetOrder('uf')">Estado</span></th>
+          <th><span (click)="SetOrder('email')">E-Mail</span></th>
+          <th><span (click)="SetOrder('telefone')">Telefone</span></th>
+          <th><span (click)="SetOrder('ativo')">Ativo</span></th>
           <th>Ação</th>
         </tr>
         <tr *ngFor ="let item of lista">
-          <td>{{item.cpfCnpj}}</td>
+          <td>{{item.documento}}</td>
           <td>{{item.nome}}</td>
           <td>{{item.bairro}}</td>
-          <td>{{item.localidade}}</td>
+          <td>{{item.municipio}}</td>
           <td>{{item.uf}}</td>
           <td>{{item.email}}</td>
           <td>{{item.telefone}}</td>
+          <td>{{item.ativo}}</td>
           <td nowrap>
             <button type="button" cButton color="primary" (click)="SetFrmUpdate(item)">Editar</button>
             <button type="button" cButton color="secondary" (click)="SetFrmDelete(item)">Apagar</button>

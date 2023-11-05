@@ -7,7 +7,6 @@ import { ClienteService } from '../../services/cliente.service';
 import { RequestListInterface } from '../../interfaces/RequestListInterface';
 import { ResponseCliente } from '../../interfaces/ResponseCliente';
 import { PagSelRows } from '../../interfaces/PagSelRows'
-import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
 
 
 @Component({
@@ -21,9 +20,6 @@ export class ClienteComponent implements OnInit {
     private clienteService: ClienteService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
-    private fb: FormBuilder,
-    private fg: FormGroup,
-    private va: Validators
   ) {
   }
   //teste:string="";
@@ -99,7 +95,6 @@ export class ClienteComponent implements OnInit {
   selpages:Array<any>=[0];
   
   ngOnInit(): void {
-    
     this.orderCol="cpf";
     this.orderColAnt="cpf";
     this.orderDir="asc";
@@ -142,7 +137,7 @@ export class ClienteComponent implements OnInit {
   
   Lista(){
     this.clienteService.Lista(this.req).subscribe((res) => {
-      
+      debugger
       this.lista = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
@@ -247,7 +242,7 @@ export class ClienteComponent implements OnInit {
     this.bFrmDisabled = true;
     var m = 3;
     var i = 0;
-    if(this.frm.cpfCnpj != "" && this.frm.cpfCnpj != undefined){
+    if(this.frm.documento != "" && this.frm.documento != undefined){
       i++
     }
     if(this.frm.nome != "" && this.frm.nome != undefined){
@@ -259,7 +254,7 @@ export class ClienteComponent implements OnInit {
     if(this.frm.cep != "" && this.frm.cep != undefined){
       i++
     }
-    if(this.frm.logradouro != "" && this.frm.logradouro != undefined){
+    if(this.frm.endereco != "" && this.frm.endereco != undefined){
       i++
     }
     if(this.frm.numero != "" && this.frm.numero != undefined){
@@ -268,7 +263,7 @@ export class ClienteComponent implements OnInit {
     if(this.frm.bairro != "" && this.frm.bairro != undefined){
       i++
     }
-    if(this.frm.localidade != "" && this.frm.localidade != undefined){
+    if(this.frm.municipio != "" && this.frm.municipio != undefined){
       i++
     }
     if(this.frm.uf != "" && this.frm.uf != undefined){
@@ -308,14 +303,14 @@ export class ClienteComponent implements OnInit {
 
   SetFrmUpdate(obj:any){
     debugger
-    this.frm.cpfCnpj = obj.cpfCnpj;
+    this.frm.documento = obj.documento;
     this.frm.nome = obj.nome;
     this.frm.cep = obj.cep;
-    this.frm.logradouro = obj.logradouro;
+    this.frm.endereco = obj.endereco;
     this.frm.numero = obj.numero;
     this.frm.complemento = obj.complemento;
     this.frm.bairro = obj.bairro;
-    this.frm.localidade = obj.localidade;
+    this.frm.municipio = obj.municipio;
     this.frm.uf = obj.uf;
     this.frm.email = obj.email;
     this.frm.telefone = obj.telefone;

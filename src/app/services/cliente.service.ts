@@ -27,10 +27,10 @@ export class ClienteService {
         debugger
         return this.http
         .get<any>(
-            domain + '/api/Clientes/' + req.Page + '/' + req.Rows + '/' + (req.ValFilter == "" ? " " : req.ValFilter) + '/' + req.ColOrder + '/' + req.ColDirectrion,       
+            domain + '/api/Clientes/' + req.Page + '/' + req.Rows + '/' + req.ColOrder + '/' + req.ColDirectrion + '/' + (req.ValFilter == "" ? encodeURIComponent(" ") : req.ValFilter),
             this.u.GetHeaderBearer()
         )
-        .pipe(retry(1), catchError(this.u.handleError));
+        .pipe(retry(1));
     }   
 
     Insert(req: ClienteViewModel): Observable<any> {
@@ -56,7 +56,7 @@ export class ClienteService {
     Delete(req: ClienteViewModel): Observable<any> {
         return this.http
         .delete<any>(
-            domain + '/api/Clientes/' + req.cpfCnpj
+            domain + '/api/Clientes/' + req.documento
         )
         .pipe(retry(1), catchError(this.u.handleError));
     }    

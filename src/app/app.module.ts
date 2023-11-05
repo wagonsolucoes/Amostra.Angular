@@ -9,7 +9,7 @@ import { ClienteService } from './services/cliente.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AgmCoreModule } from '@agm/core';
 import { AgmDrawingModule } from '@agm/drawing';
-
+import { AlertModule } from '@coreui/angular';
 
 
 import {
@@ -100,6 +100,7 @@ const APP_CONTAINERS = [
     BadgeModule,
     ListGroupModule,
     CardModule,
+    AlertModule,
   ],
   providers: [
     {

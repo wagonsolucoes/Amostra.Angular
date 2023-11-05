@@ -12,12 +12,6 @@ export let navItemsLogged: INavData[] = [
     iconComponent: { name: 'cil-star' }
   },
   {
-    name: 'Automovel',
-    attributes: {hidden: false},
-    url: '/theme/automovel',
-    iconComponent: { name: 'cil-star' }
-  },
-  {
     name: 'Cliente',    
     attributes: {hidden: false},
     url: '/theme/cliente',
