@@ -12,7 +12,6 @@ import { AgmDrawingModule } from '@agm/drawing';
 import { AlertModule } from '@coreui/angular';
 import {NgxMaskModule} from 'ngx-mask-2'
 
-
 import {
   PERFECT_SCROLLBAR_CONFIG,
   PerfectScrollbarConfigInterface,

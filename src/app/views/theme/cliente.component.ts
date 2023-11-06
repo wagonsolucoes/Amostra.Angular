@@ -6,11 +6,14 @@ import { ClienteViewModel } from '../../interfaces/ClienteViewModel';
 import { ClienteService } from '../../services/cliente.service';
 import { RequestListInterface } from '../../interfaces/RequestListInterface';
 import { ResponseCliente } from '../../interfaces/ResponseCliente';
-import { PagSelRows } from '../../interfaces/PagSelRows'
-
+import { PagSelRows } from '../../interfaces/PagSelRows';
+import { IconSetService } from '@coreui/icons-angular';
+import { cilPencil } from '../../../../node_modules/@coreui/icons/dist/cjs/free/cil-pencil'
 
 @Component({
-  templateUrl: 'cliente.component.html'
+  templateUrl: 'cliente.component.html',
+  styleUrls: ['cliente.component.css'],
+  providers: [IconSetService],
 })
 
 export class ClienteComponent implements OnInit {
@@ -20,16 +23,17 @@ export class ClienteComponent implements OnInit {
     private clienteService: ClienteService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
+    public iconSet: IconSetService
   ) {
+    iconSet.icons = { cilPencil };
   }
-  //teste:string="";
   tipo:any="CPF";
+  cnpj:any="";
   orderCol:any="";
   orderColAnt:any="";
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
-  teste:string="aaaa";
   lista:Array<ClienteViewModel>=[];
   frm = {} as ClienteViewModel;
   frmDel = {} as ClienteViewModel;
@@ -42,7 +46,6 @@ export class ClienteComponent implements OnInit {
   ttPaginas:any;
   ttRows:any;
   ttRows2:any;
-
   bLista:any=true;
   bListaAuto:any=false;
   bUpdate:any=false;
@@ -57,10 +60,8 @@ export class ClienteComponent implements OnInit {
   bFormAutoUpd:any=false;
   bFormAutoDel:any=false;
   bModalAuto:any=false;
-
   sMsgAlert:any = "";
   sAcaoFormAuto:any = "Novo";
-
   selEstados:Array<any> =  [
       {"nome": "Acre", "sigla": "AC"},
       {"nome": "Alagoas", "sigla": "AL"},
@@ -116,6 +117,10 @@ export class ClienteComponent implements OnInit {
     this.Lista();
   }
 
+  SetCnpj(){
+    this.frm.documento = this.cnpj;
+  }
+
   SetOrder(col:any){
     this.req.ColOrder = col;
     if(col != this.orderColAnt){
@@ -136,6 +141,17 @@ export class ClienteComponent implements OnInit {
     this.Lista();
   }
   
+  Viacep(){
+    this.clienteService.Viacep(this.frm.cep).subscribe((res) => {
+      debugger
+      this.frm.endereco = res.logradouro;
+      this.frm.bairro = res.bairro;
+      this.frm.municipio = res.localidade;
+      this.frm.uf = res.uf;
+      this.SetBtnSave();      
+    })
+  }
+
   Lista(){
     this.clienteService.Lista(this.req).subscribe((res) => {
       debugger
@@ -241,15 +257,12 @@ export class ClienteComponent implements OnInit {
 
   SetBtnSave(){
     this.bFrmDisabled = true;
-    var m = 3;
+    var m = 10;
     var i = 0;
     if(this.frm.documento != "" && this.frm.documento != undefined){
       i++
     }
     if(this.frm.nome != "" && this.frm.nome != undefined){
-      i++
-    }
-    if(this.frm.cep != "" && this.frm.cep != undefined){
       i++
     }
     if(this.frm.cep != "" && this.frm.cep != undefined){
@@ -288,11 +301,12 @@ export class ClienteComponent implements OnInit {
     this.frm = {} as ClienteViewModel;
     this.bForm=true;
     this.bConfirmaDelete=false;
-    this.bUpdate=true;
+    this.bUpdate=false;
     this.bLista=false;
   }
 
   Salvar(){
+    debugger
     if(this.bUpdate){
       this.Update();
     }
@@ -323,72 +337,57 @@ export class ClienteComponent implements OnInit {
   
   Insert(){
     this.clienteService.Insert(this.frm).subscribe((res) => {
-      if(res.statusCode == 200){
-        this.msgSaved="Inserido com sucesso."
-        this.req.Page = 1;
-        this.Lista();
-        this.bLista=true; 
-        this.bForm=false;
-        this.bConfirmaDelete=false;
-        this.bConfirmaDeleteAuto=false;
-        this.frm = {} as ClienteViewModel;
-        this.startTimer()
-      }
-      else{
-        ////
-      }
+      debugger
+      this.msgSaved="Inserido com sucesso."
+      this.req.Page = 1;
+      this.Lista();
+      this.bLista=true; 
+      this.bForm=false;
+      this.bConfirmaDelete=false;
+      this.bConfirmaDeleteAuto=false;
+      this.frm = {} as ClienteViewModel;
+      this.bUpdate=false;
     })
   }
 
   Update(){
     this.clienteService.Update(this.frm).subscribe((res) => {
-      if(res.statusCode == 200){
-        this.msgSaved="Alterado com sucesso."
-        this.req.Page = 1;
-        this.Lista();
-        this.bLista=true; 
-        this.bForm=false;
-        this.bConfirmaDelete=false;
-        this.bConfirmaDeleteAuto=false;
-        this.frm = {} as ClienteViewModel;
-        this.startTimer()
-      }
-      else{
-        //
-      }
+      debugger
+      this.msgSaved="Alterado com sucesso."
+      this.req.Page = 1;
+      this.Lista();
+      this.bLista=true; 
+      this.bForm=false;
+      this.bConfirmaDelete=false;
+      this.bConfirmaDeleteAuto=false;
+      this.frm = {} as ClienteViewModel;
+      this.bUpdate=false;
     })
   }
 
-  Apagar(bCancel:any,obj:any){  
-    if(!bCancel)
-    {
+  Apagar(){  
+    debugger
+    this.clienteService.Delete(this.frmDel).subscribe((res) => {
+      this.msgSaved="Apagado com sucesso."
+      this.req.Page = 1;
+      this.Lista();
       this.bLista=true;
       this.bConfirmaDelete=false;
       this.frmDel = {} as ClienteViewModel;
-    }
-    else
-    { 
-      this.frmDel = obj;
-      this.clienteService.Delete(this.frmDel).subscribe((res) => {
-        if(res.statusCode == 200){
-          this.msgSaved="Apagado com sucesso."
-          this.req.Page = 1;
-          this.Lista();
-          this.bLista=true;
-          this.bConfirmaDelete=false;
-          this.frmDel = {} as ClienteViewModel;
-          this.startTimer()
-        }
-        else{
-          //
-        }
-      })
-    }
+    });  
+  }
+
+  Cancelar(){  
+    debugger
+    this.bLista=true;
+    this.bConfirmaDelete=false;
+    this.frmDel = {} as ClienteViewModel;
   }
 
   SetFrmDelete(obj:any){
     this.frmDel = obj;
     this.bConfirmaDelete=true;
+    this.bLista=false;
   }
 
   timeLeft: number = 5;

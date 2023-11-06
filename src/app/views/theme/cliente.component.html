@@ -18,26 +18,75 @@
       <div class="row">
         <div class="col-sm-1 tar">Tipo: </div>
         <div class="col-sm-1">
-          <input type="radio" name="CPF" id="CPF" [(ngModel)]="tipo" value="CPF"> <Label for="CPF">CPF</Label>
+          <input type="radio" name="CPF" id="CPF" [(ngModel)]="tipo" (change)="SetBtnSave()" value="CPF"> <Label for="CPF">CPF</Label>
         </div>
         <div class="col-sm-1">
-          <input type="radio" name="CNPJ" id="CNPJ" [(ngModel)]="tipo" value="CNPJ"> <Label for="CNPJ">CNPJ</Label> 
+          <input type="radio" name="CNPJ" id="CNPJ" [(ngModel)]="tipo" (change)="SetBtnSave()" value="CNPJ"> <Label for="CNPJ">CNPJ</Label> 
         </div>
       </div>
       <div class="row">  
         <div class="col-sm-1 tar">
-          <label cLabel for="txtNome">Documento: </label>
+          <label cLabel for="txtNome">{{tipo}}: </label>
         </div>
         <div class="col-sm-3">
-          <input type='text' [style.display]="tipo == 'CPF' ? 'block' : 'none'" mask='000.000.000-00' [(ngModel)]="frm.documento" >
-          <input type='text' [style.display]="tipo == 'CNPJ' ? 'block' : 'none'" mask='00.000.000/0000-00' [(ngModel)]="frm.documento" >
+          <input type='text' [style.display]="tipo == 'CPF' ? 'block' : 'none'" mask='000.000.000-00' (change)="SetBtnSave()" [(ngModel)]="frm.documento" >
+          <input type='text' [style.display]="tipo == 'CNPJ' ? 'block' : 'none'" mask='00.000.000/0000-00' (change)="SetBtnSave()" (change)="SetCnpj()" [(ngModel)]="cnpj" >
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtNome">Documento: </label>
+          <label cLabel for="txtNome">Nome: </label>
         </div>
         <div class="col-sm-3">
+          <input type='text' [(ngModel)]="frm.nome" (change)="SetBtnSave()" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtCep">Cep: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtCep" (change)="Viacep(); SetBtnSave()" [(ngModel)]="frm.cep" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtEndereco">Endereço: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtEndereco" disabled="disabled" [(ngModel)]="frm.endereco" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtNumero">Número: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtNumero" (change)="SetBtnSave()" [(ngModel)]="frm.numero" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtComplemento">Complemento: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtComplemento" (change)="SetBtnSave()" [(ngModel)]="frm.complemento" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtBairro">Bairro: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtBairro" disabled="disabled" [(ngModel)]="frm.bairro" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtMunicipio">Município: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtMunicipio" disabled="disabled" [(ngModel)]="frm.municipio" >
         </div>
       </div>
       <div class="row">
@@ -45,9 +94,25 @@
           <label cLabel for="selEstado">Estado: </label>  
         </div>
         <div class="col-sm-3">
-          <select id="selEstado" [(ngModel)]="frm.uf" (change)="SetBtnSave()">
+          <select id="selEstado" [(ngModel)]="frm.uf" disabled="disabled">
             <option *ngFor="let opt of selEstados" value="{{opt.sigla}}">{{opt.sigla}}</option>
           </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtMail">E-Mail: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtMail" (change)="SetBtnSave()" [(ngModel)]="frm.email" >
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtTelefone">Telefone: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="txtTelefone" (change)="SetBtnSave()" [(ngModel)]="frm.telefone" mask="(00)0000-00009" >
         </div>
       </div>
       <div class="row">
@@ -74,16 +139,16 @@
     <c-card-body>
       Pesquisa:<br>
       <input class="form-control form-control-sm" [(ngModel)]="req.ValFilter" (change)="Search()" type="text" placeholder="Insira o termo de pesquisa" aria-label=".form-control-sm example"><br>
-      <table class="table table-striped">
+      <table>
         <tr>
-          <th><span (click)="SetOrder('documento')">Cpf/Cnpj</span></th>
-          <th><span (click)="SetOrder('nome')">Nome</span></th>
-          <th><span (click)="SetOrder('bairro')">Estado</span></th>
-          <th><span (click)="SetOrder('municipio')">Estado</span></th>
-          <th><span (click)="SetOrder('uf')">Estado</span></th>
-          <th><span (click)="SetOrder('email')">E-Mail</span></th>
-          <th><span (click)="SetOrder('telefone')">Telefone</span></th>
-          <th><span (click)="SetOrder('ativo')">Ativo</span></th>
+          <th><span (click)="SetOrder('Documento')">Cpf/Cnpj</span></th>
+          <th><span (click)="SetOrder('Nome')">Nome</span></th>
+          <th><span (click)="SetOrder('Bairro')">Bairro</span></th>
+          <th><span (click)="SetOrder('Municipio')">Município</span></th>
+          <th><span (click)="SetOrder('Uf')">Estado</span></th>
+          <th><span (click)="SetOrder('Email')">E-Mail</span></th>
+          <th><span (click)="SetOrder('Telefone')">Telefone</span></th>
+          <th><span (click)="SetOrder('Ativo')">Ativo</span></th>
           <th>Ação</th>
         </tr>
         <tr *ngFor ="let item of lista">
@@ -96,6 +161,8 @@
           <td>{{item.telefone}}</td>
           <td>{{item.ativo}}</td>
           <td nowrap>
+            <i class="cil-pencil" style="color: black !important;"></i>
+            <svg cilPencil size="1x" style="color: black !important;"></svg>
             <button type="button" cButton color="primary" (click)="SetFrmUpdate(item)">Editar</button>
             <button type="button" cButton color="secondary" (click)="SetFrmDelete(item)">Apagar</button>
           </td>
@@ -133,3 +200,51 @@
     </c-card-body>
   </c-card>
 </div>
+
+<div class="fade-in" [style.display]="bConfirmaDelete ? 'block' : 'none'">
+  <c-card class="mb-4">
+    <c-card-header>
+      Confirmar 
+      <div class="row" [style.display]="msgSaved != '' ? 'block' : 'none'">
+        - {{msgSaved}}
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col-md-12 tac">
+          Tem certeza que deseja apagar os dados abaixo ?
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          &nbsp;
+        </div>
+        <div class="col-md-7">
+          <div class="row">
+            <div class="col-md-2 tar">
+              Documento:
+            </div>
+            <div class="col-md-3">
+              {{frmDel.documento}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2 tar">
+              Nome:
+            </div>
+            <div class="col-md-5">
+              {{frmDel.nome}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 tac">
+          <button type="button" class="btn btn-primary mb-3" style="background-color: white !important; color:black !important;" (click)="Cancelar()">Cancelar</button>
+          <button type="button" class="btn btn-primary mb-3" (click)="Apagar()">Apagar</button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+

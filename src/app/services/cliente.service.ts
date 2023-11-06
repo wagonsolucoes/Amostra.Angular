@@ -47,18 +47,28 @@ export class ClienteService {
         return this.http
         .put<any>(
             domain + '/api/Clientes',
-            JSON.stringify(req),        
+            JSON.stringify(req),
             this.u.GetHeaderBearer()
         )
         .pipe(retry(1), catchError(this.u.handleError));
     }
 
     Delete(req: ClienteViewModel): Observable<any> {
+        debugger
         return this.http
         .delete<any>(
-            domain + '/api/Clientes/' + req.documento
+            domain + '/api/Clientes/' + req.documento,
+            this.u.GetHeaderBearer()
         )
         .pipe(retry(1), catchError(this.u.handleError));
     }    
+
+    Viacep(cep: any): Observable<any> {
+        return this.http
+        .get<any>(
+            domain + '/api/Clientes/Cliente/Viacep/' + cep
+        )
+        .pipe(retry(1), catchError(this.u.handleError));
+    }   
     
 }
