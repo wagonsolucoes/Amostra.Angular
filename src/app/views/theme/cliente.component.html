@@ -17,41 +17,27 @@
     <c-card-body>
       <div class="row">
         <div class="col-sm-1 tar">Tipo: </div>
-        <div class="col-sm-3">
-            <input type="radio"
+        <div class="col-sm-1">
+          <input type="radio" name="CPF" id="CPF" [(ngModel)]="tipo" value="CPF"> <Label for="CPF">CPF</Label>
         </div>
+        <div class="col-sm-1">
+          <input type="radio" name="CNPJ" id="CNPJ" [(ngModel)]="tipo" value="CNPJ"> <Label for="CNPJ">CNPJ</Label> 
+        </div>
+      </div>
+      <div class="row">  
         <div class="col-sm-1 tar">
-          <label cLabel for="txtCpf">Cpf: </label>
+          <label cLabel for="txtNome">Documento: </label>
         </div>
         <div class="col-sm-3">
-          <input cFormControl
-              disabled="disabled"
-              [style.display]="bUpdate ? 'block' : 'none'"
-               id="txtCpf"
-               type="email"
-               (change)="SetBtnSave()"
-               [(ngModel)]="frm.documento"
-        />
-        <input cFormControl
-            [style.display]="!bUpdate ? 'block' : 'none'"
-             id="txtCpf"
-             type="email"
-             (change)="SetBtnSave()"
-             [(ngModel)]="frm.documento"
-      />
+          <input type='text' [style.display]="tipo == 'CPF' ? 'block' : 'none'" mask='000.000.000-00' [(ngModel)]="frm.documento" >
+          <input type='text' [style.display]="tipo == 'CNPJ' ? 'block' : 'none'" mask='00.000.000/0000-00' [(ngModel)]="frm.documento" >
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtNome">Nome: </label>
+          <label cLabel for="txtNome">Documento: </label>
         </div>
         <div class="col-sm-3">
-          <input cFormControl
-                 id="txtNome"
-                 type="email"
-                 (change)="SetBtnSave()"
-                 [(ngModel)]="frm.nome"
-          />
         </div>
       </div>
       <div class="row">

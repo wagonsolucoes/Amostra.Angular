@@ -11,6 +11,7 @@ import { LogoutComponent } from './logout.component';
 import { ColorsComponent, ThemeColorComponent } from './colors.component';
 import { AgmCoreModule } from '@agm/core';
 import { AgmDrawingModule } from '@agm/drawing';
+import {NgxMaskModule} from 'ngx-mask-2'
 
 // Theme Routing
 import { ThemeRoutingModule } from './theme-routing.module';
@@ -33,7 +34,8 @@ import { ThemeRoutingModule } from './theme-routing.module';
     IconModule,
     NavModule,
     TabsModule,
-    ToastModule
+    ToastModule,
+    NgxMaskModule.forRoot()
   ],
   declarations: [
     ClienteComponent,

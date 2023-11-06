@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AgmCoreModule } from '@agm/core';
 import { AgmDrawingModule } from '@agm/drawing';
 import { AlertModule } from '@coreui/angular';
+import {NgxMaskModule} from 'ngx-mask-2'
 
 
 import {
@@ -101,6 +102,7 @@ const APP_CONTAINERS = [
     ListGroupModule,
     CardModule,
     AlertModule,
+    NgxMaskModule.forRoot()
   ],
   providers: [
     {

@@ -23,6 +23,7 @@ export class ClienteComponent implements OnInit {
   ) {
   }
   //teste:string="";
+  tipo:any="CPF";
   orderCol:any="";
   orderColAnt:any="";
   orderDir:any="";
