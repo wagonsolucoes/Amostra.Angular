@@ -10,5 +10,7 @@ export interface ClienteViewModel {
   uf: string;
   email: string;
   telefone: string;
+  nascimento: Date;
+  idade: any;
   ativo:boolean;
 }

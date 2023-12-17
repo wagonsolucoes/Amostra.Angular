@@ -2,32 +2,34 @@ import { AfterViewInit, Component, HostBinding, Inject, Input, OnInit, Renderer2
 import { DOCUMENT } from '@angular/common';
 import { getStyle, rgbToHex } from '@coreui/utils/src';
 import { HttpClient } from '@angular/common/http';
-import { ClienteViewModel } from '../../interfaces/ClienteViewModel';
-import { ClienteService } from '../../services/cliente.service';
+import { LivroViewModel } from '../../interfaces/LivroViewModel';
+import { LivroService } from '../../services/livro.service';
 import { RequestListInterface } from '../../interfaces/RequestListInterface';
-import { ResponseCliente } from '../../interfaces/ResponseCliente';
+import { ResponseLivro } from '../../interfaces/ResponseLivro';
 import { PagSelRows } from '../../interfaces/PagSelRows';
 import { IconSetService } from '@coreui/icons-angular';
-import { cilPencil } from '../../../../node_modules/@coreui/icons/dist/cjs/free/cil-pencil'
+import { cilPencil } from '@coreui/icons/dist/cjs/free/cil-pencil'
 import * as moment from 'moment';
 
 @Component({
-  templateUrl: 'cliente.component.html',
-  styleUrls: ['cliente.component.css'],
+  templateUrl: 'livro.component.html',
+  styleUrls: ['livro.component.css'],
   providers: [IconSetService],
 })
 
-export class ClienteComponent implements OnInit {
+export class LivroComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private clienteService: ClienteService,
+    private livroService: LivroService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public iconSet: IconSetService
   ) {
     iconSet.icons = { cilPencil };
   }
+  dhCompra = "";
+  dhExtravio = "";
   nascimento="";
   tipo:any="CPF";
   cnpj:any="";
@@ -36,11 +38,11 @@ export class ClienteComponent implements OnInit {
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
-  lista:Array<ClienteViewModel>=[];
-  frm = {} as ClienteViewModel;
-  frmDel = {} as ClienteViewModel;
+  lista:Array<LivroViewModel>=[];
+  frm = {} as LivroViewModel;
+  frmDel = {} as LivroViewModel;
   req = {} as RequestListInterface;
-  res = {} as ResponseCliente
+  res = {} as ResponseLivro
   disFirts:any = false;
   disLast:any = false;
   lblRowStart:any = "";
@@ -64,36 +66,6 @@ export class ClienteComponent implements OnInit {
   bModalAuto:any=false;
   sMsgAlert:any = "";
   sAcaoFormAuto:any = "Novo";
-  selEstados:Array<any> =  [
-      {"nome": "Acre", "sigla": "AC"},
-      {"nome": "Alagoas", "sigla": "AL"},
-      {"nome": "Amapá", "sigla": "AP"},
-      {"nome": "Amazonas", "sigla": "AM"},
-      {"nome": "Bahia", "sigla": "BA"},
-      {"nome": "Ceará", "sigla": "CE"},
-      {"nome": "Distrito Federal", "sigla": "DF"},
-      {"nome": "Espírito Santo", "sigla": "ES"},
-      {"nome": "Goiás", "sigla": "GO"},
-      {"nome": "Maranhão", "sigla": "MA"},
-      {"nome": "Mato Grosso", "sigla": "MT"},
-      {"nome": "Mato Grosso do Sul", "sigla": "MS"},
-      {"nome": "Minas Gerais", "sigla": "MG"},
-      {"nome": "Pará", "sigla": "PA"},
-      {"nome": "Paraíba", "sigla": "PB"},
-      {"nome": "Paraná", "sigla": "PR"},
-      {"nome": "Pernambuco", "sigla": "PE"},
-      {"nome": "Piauí", "sigla": "PI"},
-      {"nome": "Rio de Janeiro", "sigla": "RJ"},
-      {"nome": "Rio Grande do Norte", "sigla": "RN"},
-      {"nome": "Rio Grande do Sul", "sigla": "RS"},
-      {"nome": "Rondônia", "sigla": "RO"},
-      {"nome": "Roraima", "sigla": "RR"},
-      {"nome": "Santa Catarina", "sigla": "SC"},
-      {"nome": "São Paulo", "sigla": "SP"},
-      {"nome": "Sergipe", "sigla": "SE"},
-      {"nome": "Tocantins", "sigla": "TO"}
-  ];
-
   selrows:Array<PagSelRows>=[];
   selpages:Array<any>=[0];
 
@@ -117,10 +89,6 @@ export class ClienteComponent implements OnInit {
     this.Lista();
   }
 
-  SetCnpj(){
-    this.frm.documento = this.cnpj;
-  }
-
   SetOrder(col:any){
     this.req.ColOrder = col;
     if(col != this.orderColAnt){
@@ -141,20 +109,10 @@ export class ClienteComponent implements OnInit {
     this.Lista();
   }
 
-  Viacep(){
-    this.clienteService.Viacep(this.frm.cep).subscribe((res) => {
-      //debugger
-      this.frm.endereco = res.logradouro;
-      this.frm.bairro = res.bairro;
-      this.frm.municipio = res.localidade;
-      this.frm.uf = res.uf;
-      this.SetBtnSave();
-    })
-  }
-
   Lista(){
-    this.clienteService.Lista(this.req).subscribe((res) => {
-      //debugger
+    this.req.ColOrder = "Titulo";
+    this.livroService.Lista(this.req).subscribe((res) => {
+      debugger
       this.lista = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
@@ -263,36 +221,21 @@ export class ClienteComponent implements OnInit {
 
   SetBtnSave(){
     this.bFrmDisabled = true;
-    var m = 10;
+    var m = 5;
     var i = 0;
-    if(this.frm.documento != "" && this.frm.documento != undefined){
+    if(this.frm.dhCompra != null){
       i++
     }
-    if(this.frm.nome != "" && this.frm.nome != undefined){
+    if(this.frm.titulo != "" && this.frm.titulo != undefined){
       i++
     }
-    if(this.frm.cep != "" && this.frm.cep != undefined){
+    if(this.frm.prefacio != "" && this.frm.prefacio != undefined){
       i++
     }
-    if(this.frm.endereco != "" && this.frm.endereco != undefined){
+    if(this.frm.autor != "" && this.frm.autor != undefined){
       i++
     }
-    if(this.frm.numero != "" && this.frm.numero != undefined){
-      i++
-    }
-    if(this.frm.bairro != "" && this.frm.bairro != undefined){
-      i++
-    }
-    if(this.frm.municipio != "" && this.frm.municipio != undefined){
-      i++
-    }
-    if(this.frm.uf != "" && this.frm.uf != undefined){
-      i++
-    }
-    if(this.frm.email != "" && this.frm.email != undefined){
-      i++
-    }
-    if(this.frm.telefone != "" && this.frm.telefone != undefined){
+    if(this.frm.editora != "" && this.frm.editora != undefined){
       i++
     }
     if(i < m){
@@ -302,26 +245,54 @@ export class ClienteComponent implements OnInit {
       this.bFrmDisabled = false;
     }
   }
-
-  ValidateDate(){
-    var inp = (<HTMLInputElement>document.getElementById("txtNascimento"));
-    if(this.nascimento.length == 8){
+  ValidateDateCompra(){
+    debugger
+    var inp = (<HTMLInputElement>document.getElementById("txtDhCompra"));
+    if(this.dhCompra.length == 8){
       var dd="";
       var mm = "";
       var yyyy = "";
-      var n = this.nascimento;
+      var n = this.dhCompra;
       dd = n.substring(0,2);
       mm = n.substring(2,4);
       yyyy = n.substring(4,8);
       var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
       if(d === 'Invalid Date')
       {
-        alert("Nascimento inválido. Utilize formato 'dd/mm/aaaa'.");
+        alert("Data da compra inválida. Utilize formato 'dd/mm/aaaa'.");
         inp.focus();
         inp.select();
       }
       else{
-        this.frm.nascimento = new Date(yyyy + "-" + mm + "-" + dd);
+        this.frm.dhCompra = new Date(yyyy + "-" + mm + "-" + dd);
+        this.SetBtnSave();
+      }
+    }
+    else{
+      inp.focus();
+      inp.select();
+    }
+  }
+  ValidateDateExtravio(){
+    debugger
+    var inp = (<HTMLInputElement>document.getElementById("txtDhExtravio"));
+    if(this.dhExtravio.length == 8){
+      var dd="";
+      var mm = "";
+      var yyyy = "";
+      var n = this.dhExtravio;
+      dd = n.substring(0,2);
+      mm = n.substring(2,4);
+      yyyy = n.substring(4,8);
+      var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
+      if(d === 'Invalid Date')
+      {
+        alert("Data de extravio inválida. Utilize formato 'dd/mm/aaaa'.");
+        inp.focus();
+        inp.select();
+      }
+      else{
+        this.frm.dhExtravio = new Date(yyyy + "-" + mm + "-" + dd);
         this.SetBtnSave();
       }
     }
@@ -332,7 +303,7 @@ export class ClienteComponent implements OnInit {
   }
 
   SetFrmInsert(){
-    this.frm = {} as ClienteViewModel;
+    this.frm = {} as LivroViewModel;
     this.bForm=true;
     this.bConfirmaDelete=false;
     this.bUpdate=false;
@@ -351,19 +322,26 @@ export class ClienteComponent implements OnInit {
   }
 
   SetFrmUpdate(obj:any){
-    this.frm.documento = obj.documento;
-    this.frm.nome = obj.nome;
-    this.frm.cep = obj.cep;
-    this.frm.endereco = obj.endereco;
-    this.frm.numero = obj.numero;
-    this.frm.complemento = obj.complemento;
-    this.frm.bairro = obj.bairro;
-    this.frm.municipio = obj.municipio;
-    this.frm.uf = obj.uf;
-    this.frm.email = obj.email;
-    this.frm.nascimento = obj.nascimento;
-    var dt = moment(this.frm.nascimento.toString());
+    debugger
+    this.frm.id = obj.id;
+    this.frm.titulo = obj.titulo;
+    this.frm.prefacio = obj.prefacio;
+    this.frm.autor = obj.autor;
+    this.frm.editora = obj.editora;
+    this.frm.extraviado = obj.extraviado;
+    this.frm.emprestado = obj.emprestado;
+    this.frm.ativo = obj.ativo;
+    this.frm.dhCompra = obj.dhCompra;
+
+    var dt = moment(this.frm.dhCompra.toString());
+    var dd = "";
     var day = dt.date();
+    if(day < 10){
+      dd = "0" + day;
+    }
+    else{
+      dd = day.toString();
+    }
     var month = dt.month() + 1;
     if(month < 10){
       var mm = "0" + month;
@@ -372,20 +350,48 @@ export class ClienteComponent implements OnInit {
       var mm = month.toString();
     }
     var year = dt.year();
-    this.nascimento = day + "/" + mm + "/" + year;
-    this.frm.telefone = obj.telefone;
+    this.dhCompra = dd + "/" + mm + "/" + year;
+
+    if(obj.dhExtravio != "0001-01-01T00:00:00")
+    {
+      var dt = moment(this.frm.dhExtravio.toString());
+      var day = dt.date();
+      var month = dt.month() + 1;
+      if(month < 10){
+        var mm = "0" + month;
+      }
+      else{
+        var mm = month.toString();
+      }
+      var year = dt.year();
+      this.dhExtravio = day + "/" + mm + "/" + year;
+    }
     this.bForm=true;
     this.bConfirmaDelete=false;
     this.bUpdate=true;
     this.bLista=false;
+    this.SetBtnSave();
   }
 
   Insert(){
-    //debugger
-    this.frm.idade = 0;
+    debugger
+    this.frm.extraviado = false;
+    if(this.frm.dhExtravio != null){
+      this.frm.extraviado = true;
+    }
+    if(this.dhCompra != null){
+      var dd="";
+      var mm = "";
+      var yyyy = "";
+      dd = this.dhCompra.substring(0,2);
+      mm = this.dhCompra.substring(2,4);
+      yyyy = this.dhCompra.substring(4,8);
+      this.frm.dhCompra = new Date(yyyy + "-" + mm + "-" + dd);
+    }
+    this.frm.emprestado=false;
     this.frm.ativo = true;
-    this.clienteService.Insert(this.frm).subscribe((res) => {
-      //debugger
+    this.livroService.Insert(this.frm).subscribe((res) => {
+      debugger
       this.msgSaved="Inserido com sucesso."
       this.req.Page = 1;
       this.Lista();
@@ -393,16 +399,15 @@ export class ClienteComponent implements OnInit {
       this.bForm=false;
       this.bConfirmaDelete=false;
       this.bConfirmaDeleteAuto=false;
-      this.frm = {} as ClienteViewModel;
+      this.frm = {} as LivroViewModel;
       this.bUpdate=false;
     })
   }
 
   Update(){
-    this.frm.idade = 0;
     this.frm.ativo = true;
     debugger
-    this.clienteService.Update(this.frm).subscribe((res) => {
+    this.livroService.Update(this.frm).subscribe((res) => {
       debugger
       this.msgSaved="Alterado com sucesso."
       this.req.Page = 1;
@@ -411,20 +416,20 @@ export class ClienteComponent implements OnInit {
       this.bForm=false;
       this.bConfirmaDelete=false;
       this.bConfirmaDeleteAuto=false;
-      this.frm = {} as ClienteViewModel;
+      this.frm = {} as LivroViewModel;
       this.bUpdate=false;
     })
   }
 
   Apagar(){
     //debugger
-    this.clienteService.Delete(this.frmDel).subscribe((res) => {
+    this.livroService.Delete(this.frmDel).subscribe((res) => {
       this.msgSaved="Apagado com sucesso."
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
       this.bConfirmaDelete=false;
-      this.frmDel = {} as ClienteViewModel;
+      this.frmDel = {} as LivroViewModel;
     });
   }
 
@@ -432,7 +437,7 @@ export class ClienteComponent implements OnInit {
     //debugger
     this.bLista=true;
     this.bConfirmaDelete=false;
-    this.frmDel = {} as ClienteViewModel;
+    this.frmDel = {} as LivroViewModel;
   }
 
   SetFrmDelete(obj:any){

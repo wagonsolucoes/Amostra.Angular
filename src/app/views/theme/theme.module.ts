@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms'; 
-import { AlertModule, ModalModule, ToastModule, CardModule, GridModule, NavModule, UtilitiesModule, TabsModule } from '@coreui/angular';
+import { FormsModule } from '@angular/forms';
+import { AlertModule,ButtonModule, FormModule, ModalModule, ToastModule, CardModule, GridModule, NavModule, UtilitiesModule, TabsModule } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 
 import { ClienteComponent } from './cliente.component';
@@ -15,6 +15,26 @@ import {NgxMaskModule} from 'ngx-mask-2'
 
 // Theme Routing
 import { ThemeRoutingModule } from './theme-routing.module';
+import { EmprestadoComponent } from './emprestado.component';
+import { LivroComponent } from './livro.component';
+
+import {
+  AccordionModule,
+  BadgeModule,
+  BreadcrumbModule,
+  CarouselModule,
+  CollapseModule,
+  DropdownModule,
+  ListGroupModule,
+  PaginationModule,
+  PlaceholderModule,
+  PopoverModule,
+  ProgressModule,
+  SharedModule,
+  SpinnerModule,
+  TableModule,
+  TooltipModule,
+} from '@coreui/angular';
 
 @NgModule({
   imports: [
@@ -35,10 +55,29 @@ import { ThemeRoutingModule } from './theme-routing.module';
     NavModule,
     TabsModule,
     ToastModule,
+    AccordionModule,
+    BadgeModule,
+    BreadcrumbModule,
+    CarouselModule,
+    CollapseModule,
+    DropdownModule,
+    ListGroupModule,
+    PaginationModule,
+    PlaceholderModule,
+    PopoverModule,
+    ProgressModule,
+    SharedModule,
+    SpinnerModule,
+    TableModule,
+    TooltipModule,
+    ButtonModule,
+    FormModule,
     NgxMaskModule.forRoot()
   ],
   declarations: [
     ClienteComponent,
+    EmprestadoComponent,
+    LivroComponent,
     LoginComponent,
     ColorsComponent,
     ThemeColorComponent,

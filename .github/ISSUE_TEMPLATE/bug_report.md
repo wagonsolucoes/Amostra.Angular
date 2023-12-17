@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Tell us about a bug you may have identified in CoreUI Free Angular Admin Template.
+about: Tell us about a bug you may have identified in Amostra Angular Admin Template.
 title: ''
 labels: ''
 assignees: ''

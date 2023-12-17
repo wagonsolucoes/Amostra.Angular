@@ -18,7 +18,7 @@
 [npm-coreui-badge]: https://img.shields.io/npm/v/@coreui/coreui.png?style=flat-square
 [npm-coreui-download]: https://img.shields.io/npm/dm/@coreui/coreui.svg?style=flat-square
 
-# CoreUI Free Admin Dashboard Template for Angular 15
+# Amostra Admin Dashboard Template for Angular 15
 
 CoreUI is meant to be the UX game changer. Pure & transparent code is devoid of redundant components, so the app is light enough to offer ultimate user experience. This means mobile devices also, where the navigation is just as easy and intuitive as on a desktop or laptop. The CoreUI Layout API lets you customize your project for almost any device – be it Mobile, Web or WebApp – CoreUI covers them all!
 
@@ -42,10 +42,10 @@ CoreUI is meant to be the UX game changer. Pure & transparent code is devoid of 
 
 ## Versions
 
-* [CoreUI Free Bootstrap Admin Template](https://github.com/coreui/coreui-free-bootstrap-admin-template)
-* [CoreUI Free Angular Admin Template](https://github.com/coreui/coreui-free-angular-admin-template)
-* [CoreUI Free React.js Admin Template](https://github.com/coreui/coreui-free-react-admin-template)
-* [CoreUI Free Vue.js Admin Template](https://github.com/coreui/coreui-free-vue-admin-template)
+* [Amostra Bootstrap Admin Template](https://github.com/coreui/coreui-free-bootstrap-admin-template)
+* [Amostra Angular Admin Template](https://github.com/coreui/coreui-free-angular-admin-template)
+* [Amostra React.js Admin Template](https://github.com/coreui/coreui-free-react-admin-template)
+* [Amostra Vue.js Admin Template](https://github.com/coreui/coreui-free-vue-admin-template)
 
 ## CoreUI Pro
 
@@ -133,7 +133,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Versioning
 
-For transparency into our release cycle and in striving to maintain backward compatibility, CoreUI Free Admin Template is maintained under [the Semantic Versioning guidelines](http://semver.org/).
+For transparency into our release cycle and in striving to maintain backward compatibility, Amostra Admin Template is maintained under [the Semantic Versioning guidelines](http://semver.org/).
 
 See [the Releases section of our project](https://github.com/coreui/coreui-free-angular-admin-template/releases) for changelogs for each release version.
 

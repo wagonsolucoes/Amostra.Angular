@@ -8,7 +8,7 @@ import { JwtResponse } from "../interfaces/jwtResponse"
 import {
   HttpRequest,
   HttpHandler,
-  HttpEvent, 
+  HttpEvent,
   HttpInterceptor
 } from '@angular/common/http';
 import { RequestListInterface } from '../interfaces/RequestListInterface';
@@ -29,27 +29,27 @@ export class Util {
     return throwError(() => {
       return errorMessage;
     });
-  }  
+  }
 
   GetBearer(){
-      var oJwt = "";
-      var value = localStorage.getItem('AmostraData');
-      if (value != '' && value != null && typeof value != "undefined") {
-          let obj = JSON.parse(value);
-          if(!this.IsExpired(obj.expiration))
-          {
-              oJwt = "Bearer " +  obj.token;
-          }  
-      }
-      return oJwt;
+    var oJwt = "";
+    var value = localStorage.getItem('AmostraData');
+    if (value != '' && value != null && typeof value != "undefined") {
+        let obj = JSON.parse(value);
+        if(!this.IsExpired(obj.expiration))
+        {
+            oJwt = "Bearer " +  obj.token;
+        }
+    }
+    return oJwt;
   }
 
   GetHeaderBearer(){
-      return {
-          headers: new HttpHeaders({
-              'content-type': 'application/json', 'Accept':'text/plain', 'Accept-Encoding':'gzip, deflate, br', 'Authorization': this.GetBearer()
-          }),
-      };
+    return {
+        headers: new HttpHeaders({
+            'content-type': 'application/json', 'Accept':'text/plain', 'Accept-Encoding':'gzip, deflate, br', 'Authorization': this.GetBearer()
+        }),
+    };
   }
 
   GetHttpHeaders(){
@@ -60,14 +60,14 @@ export class Util {
     };
   }
 
-  VerificaExpired(){    
+  VerificaExpired(){
     let b = false;
     var value = localStorage.getItem('token');
     if (value != '' && value != null && typeof value != "undefined") {
       let obj = JSON.parse(value);
       b = this.IsExpired(obj.objeto.validade)
     }
-    
+
     return b;
   }
 
@@ -94,9 +94,9 @@ export class Util {
       {
           oJwt.token = obj.token;
           oJwt.expiration = obj.expiration;
-      }  
+      }
     }
     return oJwt;
   }
-  
+
 }

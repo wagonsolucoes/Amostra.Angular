@@ -6,6 +6,8 @@ import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { MapLoaderService } from './services/maps.service';
 import { LoginService } from './services/login.service';
 import { ClienteService } from './services/cliente.service';
+import { EmprestadoService } from './services/emprestado.service';
+import { LivroService } from './services/livro.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AgmCoreModule } from '@agm/core';
 import { AgmDrawingModule } from '@agm/drawing';
@@ -114,6 +116,8 @@ const APP_CONTAINERS = [
     },
     LoginService,
     ClienteService,
+    EmprestadoService,
+    LivroService,
     IconSetService,
     Title,
     MapLoaderService

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ClienteComponent } from './cliente.component';
+import { EmprestadoComponent } from './emprestado.component';
+import { LivroComponent } from './livro.component';
 import { MapsComponent } from './maps.component';
 import { LoginComponent } from './login.component';
 
@@ -34,6 +36,20 @@ const routes: Routes = [
         component: ClienteComponent,
         data: {
           title: 'Cliente',
+        },
+      },
+      {
+        path: 'emprestado',
+        component: EmprestadoComponent,
+        data: {
+          title: 'Emprestado',
+        },
+      },
+      {
+        path: 'livro',
+        component: LivroComponent,
+        data: {
+          title: 'Livro',
         },
       },
       {

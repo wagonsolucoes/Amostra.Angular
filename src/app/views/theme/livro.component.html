@@ -9,118 +9,58 @@
 <button type="button" cButton color="primary" size="sm" (click)="SetFrmInsert()" *ngIf="bLista && !bConfirmaDelete">Novo</button>
 <button type="button" cButton color="primary" size="sm" (click)="bLista=true; bListaAuto=false; bForm=false" *ngIf="!bLista && !bConfirmaDelete">Voltar</button>
 
-<div class="fade-in" [style.display]="bForm && !bConfirmaDelete ? 'block' : 'none'">
+<div class="fade-in" *ngIf="bForm && !bConfirmaDelete">
   <c-card class="mb-4">
     <c-card-header>
-      FORM
+      FORMUMÁRIO
     </c-card-header>
     <c-card-body>
       <div class="row">
-        <div class="col-sm-1 tar">Tipo: </div>
-        <div class="col-sm-1">
-          <input type="radio" name="CPF" id="CPF" [(ngModel)]="tipo" (change)="SetBtnSave()" value="CPF"> <Label for="CPF">CPF</Label>
+        <div class="col-sm-1 tar">
+          <label cLabel for="txtTitulo">Título: </label>
         </div>
-        <div class="col-sm-1">
-          <input type="radio" name="CNPJ" id="CNPJ" [(ngModel)]="tipo" (change)="SetBtnSave()" value="CNPJ"> <Label for="CNPJ">CNPJ</Label>
+        <div class="col-sm-3">
+          <input type='text' id="txtTitulo" [(ngModel)]="frm.titulo" (change)="SetBtnSave()" >
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtNome">{{tipo}}: </label>
+          <label cLabel for="txtPrefacio">Prefácio: </label>
         </div>
         <div class="col-sm-3">
-          <input type='text' *ngIf="tipo == 'CPF'" mask='000.000.000-00' (change)="SetBtnSave()" [(ngModel)]="frm.documento" >
-          <input type='text' *ngIf="tipo == 'CNPJ'" mask='00.000.000/0000-00' (change)="SetBtnSave()" (change)="SetCnpj()" [(ngModel)]="cnpj" >
+          <input type='text' id="txtPrefacio" [(ngModel)]="frm.prefacio" >
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtNome">Nome: </label>
+          <label cLabel for="txtAutor">Autor: </label>
         </div>
         <div class="col-sm-3">
-          <input type='text' [(ngModel)]="frm.nome" (change)="SetBtnSave()" >
+          <input type='text' id="txtAutor" (change)="SetBtnSave()" [(ngModel)]="frm.autor" >
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtNome">Nascimento: </label>
+          <label cLabel for="txtEditora">Editora: </label>
         </div>
         <div class="col-sm-3">
-          <input type="text" id="txtNascimento" [(ngModel)]="nascimento" (change)="ValidateDate()" mask='00/00/0000'>
+          <input type='text' id="txtEditora" (change)="SetBtnSave()" [(ngModel)]="frm.editora" >
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtCep">Cep: </label>
+          <label cLabel for="txtDhCompra">Comprado em: </label>
         </div>
         <div class="col-sm-3">
-          <input type='text' id="txtCep" (change)="Viacep(); SetBtnSave()" [(ngModel)]="frm.cep" >
+          <input type='text' id=" " [(ngModel)]="dhCompra" (change)="ValidateDateCompra()" mask='00/00/0000'>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-1 tar">
-          <label cLabel for="txtEndereco">Endereço: </label>
+          <label cLabel for="txtDhExtravio">Extravio em: </label>
         </div>
         <div class="col-sm-3">
-          <input type='text' id="txtEndereco" disabled="disabled" [(ngModel)]="frm.endereco" >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="txtNumero">Número: </label>
-        </div>
-        <div class="col-sm-3">
-          <input type='text' id="txtNumero" (change)="SetBtnSave()" [(ngModel)]="frm.numero" >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="txtComplemento">Complemento: </label>
-        </div>
-        <div class="col-sm-3">
-          <input type='text' id="txtComplemento" (change)="SetBtnSave()" [(ngModel)]="frm.complemento" >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="txtBairro">Bairro: </label>
-        </div>
-        <div class="col-sm-3">
-          <input type='text' id="txtBairro" disabled="disabled" [(ngModel)]="frm.bairro" >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="txtMunicipio">Município: </label>
-        </div>
-        <div class="col-sm-3">
-          <input type='text' id="txtMunicipio" disabled="disabled" [(ngModel)]="frm.municipio" >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="selEstado">Estado: </label>
-        </div>
-        <div class="col-sm-3">
-          <select id="selEstado" [(ngModel)]="frm.uf" disabled="disabled">
-            <option *ngFor="let opt of selEstados" value="{{opt.sigla}}">{{opt.sigla}}</option>
-          </select>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="txtMail">E-Mail: </label>
-        </div>
-        <div class="col-sm-3">
-          <input type='text' id="txtMail" (change)="SetBtnSave()" [(ngModel)]="frm.email" >
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-1 tar">
-          <label cLabel for="txtTelefone">Telefone: </label>
-        </div>
-        <div class="col-sm-3">
-          <input type='text' id="txtTelefone" (change)="SetBtnSave()" [(ngModel)]="frm.telefone" mask="(00)0000-00009" >
+          <input type='text' id="txtDhExtravio" [(ngModel)]="dhExtravio" (change)="ValidateDateExtravio()" mask='00/00/0000'>
         </div>
       </div>
       <div class="row">
@@ -139,7 +79,7 @@
 <div class="fade-in" *ngIf="bLista && !bConfirmaDelete">
   <c-card class="mb-4">
     <c-card-header>
-      Clientes
+      Livros
       <div class="row" *ngIf="msgSaved != ''">
         - {{msgSaved}}
       </div>
@@ -148,28 +88,20 @@
       <input class="form-control form-control-sm" [(ngModel)]="req.ValFilter" (change)="Search()" type="text" placeholder="Insira o termo de pesquisa" aria-label=".form-control-sm example"><br>
       <table>
         <tr>
-          <th><span (click)="SetOrder('Documento')">Cpf/Cnpj</span></th>
-          <th><span (click)="SetOrder('Nome')">Nome</span></th>
-          <th><span (click)="SetOrder('Bairro')">Bairro</span></th>
-          <th><span (click)="SetOrder('Municipio')">Município</span></th>
-          <th><span (click)="SetOrder('Uf')">Estado</span></th>
-          <th><span (click)="SetOrder('Email')">E-Mail</span></th>
-          <th><span (click)="SetOrder('Telefone')">Telefone</span></th>
+          <th><span (click)="SetOrder('Titulo')">Título</span></th>
+          <th><span (click)="SetOrder('Autor')">Autor</span></th>
+          <th><span (click)="SetOrder('Editora')">Editora</span></th>
           <th><span (click)="SetOrder('Ativo')">Ativo</span></th>
           <th>Ação</th>
         </tr>
         <tr *ngFor ="let item of lista">
-          <td>{{item.documento}}</td>
-          <td>{{item.nome}}</td>
-          <td>{{item.bairro}}</td>
-          <td>{{item.municipio}}</td>
-          <td>{{item.uf}}</td>
-          <td>{{item.email}}</td>
-          <td>{{item.telefone}}</td>
+          <td>{{item.titulo}}</td>
+          <td>{{item.autor}}</td>
+          <td>{{item.editora}}</td>
           <td>{{item.ativo}}</td>
           <td nowrap>
-            <button type="button" cButton size="sm" color="primary" (click)="SetFrmUpdate(item)">Editar</button>
-            <button type="button" cButton size="sm" color="danger" (click)="SetFrmDelete(item)">Apagar</button>
+            <button type="button" cButton color="primary" size="sm" (click)="SetFrmUpdate(item)">Editar</button>
+            <button type="button" cButton color="danger" size="sm" (click)="SetFrmDelete(item)">Apagar</button>
           </td>
         </tr>
       </table>
@@ -206,7 +138,7 @@
   <c-card class="mb-4">
     <c-card-header>
       Confirmar
-      <div class="row" *ngIf="msgSaved">
+      <div class="row" *ngIf="msgSaved != ''">
         - {{msgSaved}}
       </div>
     </c-card-header>
@@ -223,18 +155,26 @@
         <div class="col-md-7">
           <div class="row">
             <div class="col-md-2 tar">
-              Documento:
+              Título:
             </div>
             <div class="col-md-3">
-              {{frmDel.documento}}
+              {{frmDel.titulo}}
             </div>
           </div>
           <div class="row">
             <div class="col-md-2 tar">
-              Nome:
+              Autor:
             </div>
             <div class="col-md-5">
-              {{frmDel.nome}}
+              {{frmDel.autor}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2 tar">
+              Editora:
+            </div>
+            <div class="col-md-5">
+              {{frmDel.editora}}
             </div>
           </div>
         </div>

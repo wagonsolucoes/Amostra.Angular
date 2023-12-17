@@ -10,76 +10,68 @@ import {
 } from '@angular/common/http';
 
 import * as moment from 'moment';
-import { RequestListInterface } from '../interfaces/RequestListInterface';
+import { RequestListEmprestadoInterface } from '../interfaces/RequestListEmprestadoInterface';
 import { Util } from '../interceptor/Util';
 import { JwtResponse } from '../interfaces/jwtResponse';
-import { ClienteViewModel } from '../interfaces/ClienteViewModel';
+import { EmprestadoViewModel } from '../interfaces/EmprestadoViewModel';
 
 let domain : string = "http://localhost:5062";
 @Injectable({providedIn: 'root'})
-export class ClienteService {
+export class EmprestadoService {
   constructor(
       protected http: HttpClient,
       private u: Util
   ) {}
 
-  Lista(req: RequestListInterface): Observable<any> {
+  Lista(req: RequestListEmprestadoInterface): Observable<any> {
+      debugger
       if(req.Page == 1){
         var IniciaEm = 0;
       }
       else{
         var IniciaEm = (req.Page * req.Rows) - req.Rows;
       }
+      if(req.IdLivro == undefined){
+        req.IdLivro = " ";
+      }
+      if(req.IdCliente == undefined){
+        req.IdCliente = " ";
+      }
+      let sUrl = domain + '/api/Emprestado/Filtro/' + IniciaEm + '/' + req.Rows + '/' + req.IdLivro + '/' + req.IdCliente + '/' + req.ColOrder + '/' + req.ColDirectrion;
       return this.http
       .get<any>(
-          domain + '/api/Clientes/' + IniciaEm + '/' + req.Rows + '/' + (req.ValFilter == "" ? encodeURIComponent(" ") : req.ValFilter) + '/' + req.ColOrder + '/' + req.ColDirectrion,
+          sUrl,
           this.u.GetHeaderBearer()
       )
       .pipe(retry(1));
   }
 
-  DdlCliente(): Observable<any> {
-    return this.http
-    .get<any>(
-        domain + '/api/Clientes/DdlCliente',
-        this.u.GetHeaderBearer()
-    )
-    .pipe(retry(1));
-  }
-
-  Insert(req: ClienteViewModel): Observable<any> {
+  Insert(req: EmprestadoViewModel): Observable<any> {
     return this.http
     .post<any>(
-        domain + '/api/Clientes/Add',
+        domain + '/api/Emprestado/Add',
         JSON.stringify(req),
         this.u.GetHeaderBearer()
     )
     .pipe(retry(1), catchError(this.u.handleError));
   }
 
-  Update(req: ClienteViewModel): Observable<any> {
+  Update(req: EmprestadoViewModel): Observable<any> {
     return this.http
     .put<any>(
-        domain + '/api/Clientes/Update',
+        domain + '/api/Emprestado/Update',
         JSON.stringify(req),
         this.u.GetHeaderBearer()
     )
     .pipe(retry(1), catchError(this.u.handleError));
   }
 
-  Delete(req: ClienteViewModel): Observable<any> {
+  Delete(req: EmprestadoViewModel): Observable<any> {
+      debugger
       return this.http
       .delete<any>(
-          domain + '/api/Clientes/Delete/' + req.documento,
+          domain + '/api/Emprestado/Delete/' + req.id,
           this.u.GetHeaderBearer()
-      )
-      .pipe(retry(1), catchError(this.u.handleError));
-  }
-
-  Viacep(cep: any): Observable<any> {
-      return this.http
-      .get<any>(
-          domain + '/api/Clientes/Cliente/Viacep/' + cep
       )
       .pipe(retry(1), catchError(this.u.handleError));
   }

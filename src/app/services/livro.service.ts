@@ -13,73 +13,65 @@ import * as moment from 'moment';
 import { RequestListInterface } from '../interfaces/RequestListInterface';
 import { Util } from '../interceptor/Util';
 import { JwtResponse } from '../interfaces/jwtResponse';
-import { ClienteViewModel } from '../interfaces/ClienteViewModel';
+import { LivroViewModel } from '../interfaces/LivroViewModel';
 
 let domain : string = "http://localhost:5062";
 @Injectable({providedIn: 'root'})
-export class ClienteService {
+export class LivroService {
   constructor(
       protected http: HttpClient,
       private u: Util
   ) {}
 
   Lista(req: RequestListInterface): Observable<any> {
-      if(req.Page == 1){
-        var IniciaEm = 0;
-      }
-      else{
-        var IniciaEm = (req.Page * req.Rows) - req.Rows;
-      }
-      return this.http
-      .get<any>(
-          domain + '/api/Clientes/' + IniciaEm + '/' + req.Rows + '/' + (req.ValFilter == "" ? encodeURIComponent(" ") : req.ValFilter) + '/' + req.ColOrder + '/' + req.ColDirectrion,
-          this.u.GetHeaderBearer()
-      )
-      .pipe(retry(1));
-  }
-
-  DdlCliente(): Observable<any> {
+    if(req.Page == 1){
+      var IniciaEm = 0;
+    }
+    else{
+      var IniciaEm = (req.Page * req.Rows) - req.Rows;
+    }
     return this.http
     .get<any>(
-        domain + '/api/Clientes/DdlCliente',
+        domain + '/api/Livro/Filtro/' + IniciaEm + '/' + req.Rows + '/' + (req.ValFilter == "" ? encodeURIComponent(" ") : req.ValFilter) + '/' + req.ColOrder + '/' + req.ColDirectrion,
         this.u.GetHeaderBearer()
     )
     .pipe(retry(1));
   }
 
-  Insert(req: ClienteViewModel): Observable<any> {
+  DdlLivro(): Observable<any> {
+    return this.http
+    .get<any>(
+        domain + '/api/Livro/DdlLivro',
+        this.u.GetHeaderBearer()
+    )
+    .pipe(retry(1));
+  }
+
+  Insert(req: LivroViewModel): Observable<any> {
     return this.http
     .post<any>(
-        domain + '/api/Clientes/Add',
+        domain + '/api/Livro/Add',
         JSON.stringify(req),
         this.u.GetHeaderBearer()
     )
     .pipe(retry(1), catchError(this.u.handleError));
   }
 
-  Update(req: ClienteViewModel): Observable<any> {
+  Update(req: LivroViewModel): Observable<any> {
     return this.http
     .put<any>(
-        domain + '/api/Clientes/Update',
+        domain + '/api/Livro/Update',
         JSON.stringify(req),
         this.u.GetHeaderBearer()
     )
     .pipe(retry(1), catchError(this.u.handleError));
   }
 
-  Delete(req: ClienteViewModel): Observable<any> {
+  Delete(req: LivroViewModel): Observable<any> {
       return this.http
       .delete<any>(
-          domain + '/api/Clientes/Delete/' + req.documento,
+          domain + '/api/Livro/Delete/' + req.id,
           this.u.GetHeaderBearer()
-      )
-      .pipe(retry(1), catchError(this.u.handleError));
-  }
-
-  Viacep(cep: any): Observable<any> {
-      return this.http
-      .get<any>(
-          domain + '/api/Clientes/Cliente/Viacep/' + cep
       )
       .pipe(retry(1), catchError(this.u.handleError));
   }

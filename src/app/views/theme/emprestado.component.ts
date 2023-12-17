@@ -2,32 +2,40 @@ import { AfterViewInit, Component, HostBinding, Inject, Input, OnInit, Renderer2
 import { DOCUMENT } from '@angular/common';
 import { getStyle, rgbToHex } from '@coreui/utils/src';
 import { HttpClient } from '@angular/common/http';
-import { ClienteViewModel } from '../../interfaces/ClienteViewModel';
+import { EmprestadoViewModel } from '../../interfaces/EmprestadoViewModel';
+import { SelectDto } from '../../interfaces/SelectDto';
 import { ClienteService } from '../../services/cliente.service';
-import { RequestListInterface } from '../../interfaces/RequestListInterface';
-import { ResponseCliente } from '../../interfaces/ResponseCliente';
+import { EmprestadoService } from '../../services/emprestado.service';
+import { LivroService } from '../../services/livro.service';
+import { RequestListEmprestadoInterface } from '../../interfaces/RequestListEmprestadoInterface';
+import { ResponseEmprestado } from '../../interfaces/ResponseEmprestado';
 import { PagSelRows } from '../../interfaces/PagSelRows';
 import { IconSetService } from '@coreui/icons-angular';
-import { cilPencil } from '../../../../node_modules/@coreui/icons/dist/cjs/free/cil-pencil'
+import { cilPencil } from '@coreui/icons/dist/cjs/free/cil-pencil'
 import * as moment from 'moment';
 
 @Component({
-  templateUrl: 'cliente.component.html',
-  styleUrls: ['cliente.component.css'],
+  templateUrl: 'emprestado.component.html',
+  styleUrls: ['emprestado.component.css'],
   providers: [IconSetService],
 })
 
-export class ClienteComponent implements OnInit {
+export class EmprestadoComponent implements OnInit {
+JSON: any;
 
   constructor(
     private http: HttpClient,
     private clienteService: ClienteService,
+    private emprestadoService: EmprestadoService,
+    private livroService: LivroService,
     @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     public iconSet: IconSetService
   ) {
     iconSet.icons = { cilPencil };
   }
+  dh:any;
+  dhDevolucao:any;
   nascimento="";
   tipo:any="CPF";
   cnpj:any="";
@@ -36,11 +44,13 @@ export class ClienteComponent implements OnInit {
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
-  lista:Array<ClienteViewModel>=[];
-  frm = {} as ClienteViewModel;
-  frmDel = {} as ClienteViewModel;
-  req = {} as RequestListInterface;
-  res = {} as ResponseCliente
+  lista:Array<EmprestadoViewModel>=[];
+  ddlCliente:Array<SelectDto>=[];
+  ddlLivro:Array<SelectDto>=[];
+  frm = {} as EmprestadoViewModel;
+  frmDel = {} as EmprestadoViewModel;
+  req = {} as RequestListEmprestadoInterface;
+  res = {} as ResponseEmprestado
   disFirts:any = false;
   disLast:any = false;
   lblRowStart:any = "";
@@ -64,36 +74,6 @@ export class ClienteComponent implements OnInit {
   bModalAuto:any=false;
   sMsgAlert:any = "";
   sAcaoFormAuto:any = "Novo";
-  selEstados:Array<any> =  [
-      {"nome": "Acre", "sigla": "AC"},
-      {"nome": "Alagoas", "sigla": "AL"},
-      {"nome": "Amapá", "sigla": "AP"},
-      {"nome": "Amazonas", "sigla": "AM"},
-      {"nome": "Bahia", "sigla": "BA"},
-      {"nome": "Ceará", "sigla": "CE"},
-      {"nome": "Distrito Federal", "sigla": "DF"},
-      {"nome": "Espírito Santo", "sigla": "ES"},
-      {"nome": "Goiás", "sigla": "GO"},
-      {"nome": "Maranhão", "sigla": "MA"},
-      {"nome": "Mato Grosso", "sigla": "MT"},
-      {"nome": "Mato Grosso do Sul", "sigla": "MS"},
-      {"nome": "Minas Gerais", "sigla": "MG"},
-      {"nome": "Pará", "sigla": "PA"},
-      {"nome": "Paraíba", "sigla": "PB"},
-      {"nome": "Paraná", "sigla": "PR"},
-      {"nome": "Pernambuco", "sigla": "PE"},
-      {"nome": "Piauí", "sigla": "PI"},
-      {"nome": "Rio de Janeiro", "sigla": "RJ"},
-      {"nome": "Rio Grande do Norte", "sigla": "RN"},
-      {"nome": "Rio Grande do Sul", "sigla": "RS"},
-      {"nome": "Rondônia", "sigla": "RO"},
-      {"nome": "Roraima", "sigla": "RR"},
-      {"nome": "Santa Catarina", "sigla": "SC"},
-      {"nome": "São Paulo", "sigla": "SP"},
-      {"nome": "Sergipe", "sigla": "SE"},
-      {"nome": "Tocantins", "sigla": "TO"}
-  ];
-
   selrows:Array<PagSelRows>=[];
   selpages:Array<any>=[0];
 
@@ -106,8 +86,7 @@ export class ClienteComponent implements OnInit {
     this.req.Page = 1;
     this.req.Rows = 10;
     this.req.ColDirectrion = "ASC";
-    this.req.ColOrder = "Nome";
-    this.req.ValFilter = "";
+    this.req.ColOrder = "Cliente";
     this.selrows = [
       { val: "10",  txt: "10 registros" },
       { val: "25",   txt: "25 registros" },
@@ -115,10 +94,8 @@ export class ClienteComponent implements OnInit {
       { val: "100", txt: "100 registros" }
     ];
     this.Lista();
-  }
-
-  SetCnpj(){
-    this.frm.documento = this.cnpj;
+    this.DdlCliente();
+    this.DdlLivro();
   }
 
   SetOrder(col:any){
@@ -141,23 +118,25 @@ export class ClienteComponent implements OnInit {
     this.Lista();
   }
 
-  Viacep(){
-    this.clienteService.Viacep(this.frm.cep).subscribe((res) => {
-      //debugger
-      this.frm.endereco = res.logradouro;
-      this.frm.bairro = res.bairro;
-      this.frm.municipio = res.localidade;
-      this.frm.uf = res.uf;
-      this.SetBtnSave();
-    })
-  }
-
   Lista(){
-    this.clienteService.Lista(this.req).subscribe((res) => {
-      //debugger
+    debugger
+    this.emprestadoService.Lista(this.req).subscribe((res) => {
+      debugger
       this.lista = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
+    })
+  }
+
+  DdlCliente(){
+    this.clienteService.DdlCliente().subscribe((res) => {
+      this.ddlCliente = res;
+    })
+  }
+
+  DdlLivro(){
+    this.livroService.DdlLivro().subscribe((res) => {
+      this.ddlLivro = res;
     })
   }
 
@@ -263,36 +242,12 @@ export class ClienteComponent implements OnInit {
 
   SetBtnSave(){
     this.bFrmDisabled = true;
-    var m = 10;
+    var m = 2;
     var i = 0;
-    if(this.frm.documento != "" && this.frm.documento != undefined){
+    if(this.frm.idCliente != "" && this.frm.idCliente != undefined){
       i++
     }
-    if(this.frm.nome != "" && this.frm.nome != undefined){
-      i++
-    }
-    if(this.frm.cep != "" && this.frm.cep != undefined){
-      i++
-    }
-    if(this.frm.endereco != "" && this.frm.endereco != undefined){
-      i++
-    }
-    if(this.frm.numero != "" && this.frm.numero != undefined){
-      i++
-    }
-    if(this.frm.bairro != "" && this.frm.bairro != undefined){
-      i++
-    }
-    if(this.frm.municipio != "" && this.frm.municipio != undefined){
-      i++
-    }
-    if(this.frm.uf != "" && this.frm.uf != undefined){
-      i++
-    }
-    if(this.frm.email != "" && this.frm.email != undefined){
-      i++
-    }
-    if(this.frm.telefone != "" && this.frm.telefone != undefined){
+    if(this.frm.idLivro != "" && this.frm.idLivro != undefined){
       i++
     }
     if(i < m){
@@ -305,23 +260,23 @@ export class ClienteComponent implements OnInit {
 
   ValidateDate(){
     var inp = (<HTMLInputElement>document.getElementById("txtNascimento"));
-    if(this.nascimento.length == 8){
+    if(this.dhDevolucao.length == 8){
       var dd="";
       var mm = "";
       var yyyy = "";
-      var n = this.nascimento;
+      var n = this.dhDevolucao;
       dd = n.substring(0,2);
       mm = n.substring(2,4);
       yyyy = n.substring(4,8);
       var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
       if(d === 'Invalid Date')
       {
-        alert("Nascimento inválido. Utilize formato 'dd/mm/aaaa'.");
+        alert("Data de devolução inválida. Utilize formato 'dd/mm/aaaa'.");
         inp.focus();
         inp.select();
       }
       else{
-        this.frm.nascimento = new Date(yyyy + "-" + mm + "-" + dd);
+        this.frm.dhDevolucao = new Date(yyyy + "-" + mm + "-" + dd);
         this.SetBtnSave();
       }
     }
@@ -332,7 +287,7 @@ export class ClienteComponent implements OnInit {
   }
 
   SetFrmInsert(){
-    this.frm = {} as ClienteViewModel;
+    this.frm = {} as EmprestadoViewModel;
     this.bForm=true;
     this.bConfirmaDelete=false;
     this.bUpdate=false;
@@ -351,18 +306,15 @@ export class ClienteComponent implements OnInit {
   }
 
   SetFrmUpdate(obj:any){
-    this.frm.documento = obj.documento;
-    this.frm.nome = obj.nome;
-    this.frm.cep = obj.cep;
-    this.frm.endereco = obj.endereco;
-    this.frm.numero = obj.numero;
-    this.frm.complemento = obj.complemento;
-    this.frm.bairro = obj.bairro;
-    this.frm.municipio = obj.municipio;
-    this.frm.uf = obj.uf;
-    this.frm.email = obj.email;
-    this.frm.nascimento = obj.nascimento;
-    var dt = moment(this.frm.nascimento.toString());
+    this.frm.id = obj.id;
+    this.frm.idCliente = obj.idCliente;
+    this.frm.idLivro = obj.idLivro;
+    this.frm.dh = obj.dh;
+    this.frm.dhDevolucao = obj.dhDevolucao;
+    this.frm.diasEmprestado = obj.diasEmprestado;
+    this.frm.ativo = obj.ativo;
+
+    var dt = moment(obj.dh.toString());
     var day = dt.date();
     var month = dt.month() + 1;
     if(month < 10){
@@ -372,19 +324,43 @@ export class ClienteComponent implements OnInit {
       var mm = month.toString();
     }
     var year = dt.year();
-    this.nascimento = day + "/" + mm + "/" + year;
-    this.frm.telefone = obj.telefone;
+    this.dh = day + "/" + mm + "/" + year;
+
+    debugger
+    var d = "";
+    if(obj.dhDevolucao != null){
+      var dt = moment(obj.dhDevolucao.toString());
+      var day = dt.date();
+      if(day < 10){
+        d = "0" + day;
+      }
+      else
+      {
+        d = day.toString();
+      }
+      var month = dt.month() + 1;
+      if(month < 10){
+        var mm = "0" + month;
+      }
+      else{
+        var mm = month.toString();
+      }
+      var year = dt.year();
+      this.dhDevolucao = d + "/" + mm + "/" + year;
+    }
+
     this.bForm=true;
     this.bConfirmaDelete=false;
     this.bUpdate=true;
     this.bLista=false;
+    this.SetBtnSave();
   }
 
   Insert(){
     //debugger
-    this.frm.idade = 0;
+    this.frm.diasEmprestado = 0;
     this.frm.ativo = true;
-    this.clienteService.Insert(this.frm).subscribe((res) => {
+    this.emprestadoService.Insert(this.frm).subscribe((res) => {
       //debugger
       this.msgSaved="Inserido com sucesso."
       this.req.Page = 1;
@@ -393,16 +369,16 @@ export class ClienteComponent implements OnInit {
       this.bForm=false;
       this.bConfirmaDelete=false;
       this.bConfirmaDeleteAuto=false;
-      this.frm = {} as ClienteViewModel;
+      this.frm = {} as EmprestadoViewModel;
       this.bUpdate=false;
     })
   }
 
   Update(){
-    this.frm.idade = 0;
+    this.frm.diasEmprestado = 0;
     this.frm.ativo = true;
     debugger
-    this.clienteService.Update(this.frm).subscribe((res) => {
+    this.emprestadoService.Update(this.frm).subscribe((res) => {
       debugger
       this.msgSaved="Alterado com sucesso."
       this.req.Page = 1;
@@ -411,20 +387,20 @@ export class ClienteComponent implements OnInit {
       this.bForm=false;
       this.bConfirmaDelete=false;
       this.bConfirmaDeleteAuto=false;
-      this.frm = {} as ClienteViewModel;
+      this.frm = {} as EmprestadoViewModel;
       this.bUpdate=false;
     })
   }
 
   Apagar(){
     //debugger
-    this.clienteService.Delete(this.frmDel).subscribe((res) => {
+    this.emprestadoService.Delete(this.frmDel).subscribe((res) => {
       this.msgSaved="Apagado com sucesso."
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
       this.bConfirmaDelete=false;
-      this.frmDel = {} as ClienteViewModel;
+      this.frmDel = {} as EmprestadoViewModel;
     });
   }
 
@@ -432,7 +408,7 @@ export class ClienteComponent implements OnInit {
     //debugger
     this.bLista=true;
     this.bConfirmaDelete=false;
-    this.frmDel = {} as ClienteViewModel;
+    this.frmDel = {} as EmprestadoViewModel;
   }
 
   SetFrmDelete(obj:any){

@@ -1,0 +1,174 @@
+<style>
+  .tar{
+    text-align: right;
+  }
+  .tac{
+    text-align: center;
+  }
+</style>
+<button type="button" cButton color="primary" size="sm" (click)="SetFrmInsert()" *ngIf="bLista && !bConfirmaDelete">Novo</button>
+<button type="button" cButton color="primary" size="sm" (click)="bLista=true; bListaAuto=false; bForm=false"   *ngIf="!bLista && !bConfirmaDelete">Voltar</button>
+
+<div class="fade-in" *ngIf="bForm && !bConfirmaDelete">
+  <c-card class="mb-4">
+    <c-card-header>
+      FORMULÁRIO
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="frmSelCliente">Cliente: </label>
+        </div>
+        <div class="col-sm-3">
+          <select id="frmSelCliente" class="w100p" [(ngModel)]="frm.idCliente" (change)="SetBtnSave()">
+            <option *ngFor="let opt of ddlCliente" value="{{opt.val}}">{{opt.txt}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="frmSelLivro">Livro: </label>
+        </div>
+        <div class="col-sm-3">
+          <select id="frmSelLivro" class="w100p" [(ngModel)]="frm.idLivro" (change)="SetBtnSave()">
+            <option *ngFor="let opt of ddlLivro" value="{{opt.id}}">{{opt.txt}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          <label cLabel for="frmDhDevolucao">Devolução: </label>
+        </div>
+        <div class="col-sm-3">
+          <input type='text' id="frmDhDevolucao" [(ngModel)]="dhDevolucao" (change)="ValidateDate()" mask='00/00/0000'>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-1 tar">
+          &nbsp;
+        </div>
+        <div class="col-sm-3">
+          <button type="button" *ngIf="!bFrmDisabled" cButtoncolor="primary" size="sm" (click)="Salvar()">Salvar</button>
+          <button type="button" *ngIf="bFrmDisabled" ng-disabled="bFrmDisabled" cButton color="primary" size="sm" disabled>Salvar</button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in" *ngIf="bLista && !bConfirmaDelete">
+  <c-card class="mb-4">
+    <c-card-header>
+      Emprestado
+      <div class="row" *ngIf="msgSaved != ''">
+        - {{msgSaved}}
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col-md-1">
+          Clientes:
+        </div>
+        <div class="col-md-5">
+          <select class="form-control form-control-sm w100p" id="selCliente" [(ngModel)]="req.IdCliente" (change)="Search()">
+            <option *ngFor="let opt of ddlCliente" value="{{opt.val}}">{{opt.txt}}</option>
+          </select>
+        </div>
+        <div class="col-md-1">
+          Livros:
+        </div>
+        <div class="col-md-5 mgb">
+          <select id="selLivro" class="form-control form-control-sm w100p" [(ngModel)]="req.IdLivro" (change)="Search()">
+            <option *ngFor="let opt of ddlLivro" value="{{opt.id}}">{{opt.txt}}</option>
+          </select>
+        </div>
+      </div>
+      <table>
+        <tr>
+          <th><span (click)="SetOrder('Cliente')">Cliente</span></th>
+          <th><span (click)="SetOrder('Livro')">Livro</span></th>
+          <th><span (click)="SetOrder('Dh')">dh</span></th>
+          <th><span (click)="SetOrder('DhDevolucao')">dhDevolucao</span></th>
+          <th><span (click)="SetOrder('Ativo')">Ativo</span></th>
+          <th>Ação</th>
+        </tr>
+        <tr *ngFor ="let item of lista">
+          <td>{{item.cliente.nome}}</td>
+          <td>{{item.livro.titulo}}</td>
+          <td>{{item.dh | date: 'dd/MM/yyyy'}}</td>
+          <td>{{item.dhDevolucao | date: 'dd/MM/yyyy'}}</td>
+          <td>{{item.ativo}}</td>
+          <td nowrap>
+            <button type="button" cButton color="primary" size="sm" (click)="SetFrmUpdate(item)">Editar</button>
+            <button type="button" cButton color="danger" size="sm" (click)="SetFrmDelete(item)">Apagar</button>
+          </td>
+        </tr>
+      </table>
+      <div class="paginador">
+        <div class="registro">Registros: </div>
+        <div class="rows">
+          <select class="form-control form-control-sm w100px" [(ngModel)]="req.Rows" (change)="SetRows()">
+            <option *ngFor="let opt of selrows" value="{{opt.val}}">{{opt.txt}}</option>
+          </select>
+        </div>
+        <div class="btsPaginador">
+          <button type="button" color="light" cButton size="sm" ng-disabled="disFirts" (click)="SetSt()">|<</button>
+          <button type="button" color="light" cButton size="sm" ng-disabled="disFirts" (click)="Prev()"><</button>
+        </div>
+        <div class="paginas">
+          <select class="form-control form-control-sm w100px" [(ngModel)]="req.Page" (change)="Lista()">
+            <option *ngFor="let opt of selpages" value="{{opt}}">{{opt}} página</option>
+          </select>
+        </div>
+        <div class="btsPaginador">
+          <button type="button" color="light" cButton size="sm" ng-disabled="disLast" (click)="Next()">></button>
+          <button type="button" color="light" cButton size="sm" ng-disabled="disLast" (click)="SetLst()">>|</button>
+        </div>
+        <div class="lblPaginador">
+          <div *ngIf="ttRows2 > 0">Mostrando registros de {{lblRowStart}} até {{lblRowLast}} de {{ttRows2}}.</div>
+          <div *ngIf="ttRows2 == 0">Nenhum registro.</div>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
+<div class="fade-in" *ngIf="bConfirmaDelete">
+  <c-card class="mb-4">
+    <c-card-header>
+      Confirmar
+      <div class="row" *ngIf="msgSaved != ''">
+        - {{msgSaved}}
+      </div>
+    </c-card-header>
+    <c-card-body>
+      <div class="row">
+        <div class="col-md-12 tac">
+          Tem certeza que deseja apagar os dados abaixo ?
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5">
+          &nbsp;
+        </div>
+        <div class="col-md-7">
+          <div class="row">
+            <div class="col-md-2 tar">
+              idCliente:
+            </div>
+            <div class="col-md-3">
+              {{frmDel.idCliente}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 tac">
+          <button type="button" cButton color="primary" size="sm" (click)="Cancelar()">Cancelar</button>
+          <button type="button" cButton color="danger" size="sm" (click)="Apagar()">Apagar</button>
+        </div>
+      </div>
+    </c-card-body>
+  </c-card>
+</div>
+
