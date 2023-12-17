@@ -12,13 +12,13 @@ export let navItemsLogged: INavData[] = [
     iconComponent: { name: 'cil-star' }
   },
   {
-    name: 'Cliente',    
+    name: 'Cliente',
     attributes: {hidden: false},
     url: '/theme/cliente',
     iconComponent: { name: 'cil-people' }
   },
   {
-    name: 'Maps',    
+    name: 'Maps',
     attributes: {hidden: false},
     url: '/theme/maps',
     iconComponent: { name: 'cil-people' }

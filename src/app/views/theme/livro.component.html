@@ -1,18 +1,49 @@
-<style>
-  .tar{
-    text-align: right;
-  }
-  .tac{
-    text-align: center;
-  }
-</style>
-<button type="button" cButton color="primary" size="sm" (click)="SetFrmInsert()" *ngIf="bLista && !bConfirmaDelete">Novo</button>
-<button type="button" cButton color="primary" size="sm" (click)="bLista=true; bListaAuto=false; bForm=false" *ngIf="!bLista && !bConfirmaDelete">Voltar</button>
+<c-toaster [placement]="position" class="p-3" position="fixed">
+  <c-toast
+    color="{{colorToast}}"
+    (timer)="onTimerChange($event)"
+    (visibleChange)="onVisibleChange($event)"
+    [visible]="bToast">
+    <c-toast-header>
+      {{headerToast}}
+    </c-toast-header>
+    <c-toast-body>
+      <p>{{bodyToast}}</p>
+      <c-progress thin>
+        <c-progress-bar [value]="percentage"></c-progress-bar>
+      </c-progress>
+    </c-toast-body>
+  </c-toast>
+</c-toaster>
+
+<div class="row">
+  <div class="col-md-11">
+    <c-breadcrumb *ngIf="bLista && !bConfirmaDelete">
+      <c-breadcrumb-item [active]="true">Livro</c-breadcrumb-item>
+    </c-breadcrumb>
+
+    <c-breadcrumb *ngIf="bForm && !bConfirmaDelete">
+      <c-breadcrumb-item [active]="true">Livro</c-breadcrumb-item>
+      <c-breadcrumb-item [active]="true" *ngIf="!bUpdate">Inclusão</c-breadcrumb-item>
+      <c-breadcrumb-item [active]="true" *ngIf="bUpdate">Alteração</c-breadcrumb-item>
+    </c-breadcrumb>
+
+    <c-breadcrumb *ngIf="bConfirmaDelete">
+      <c-breadcrumb-item [active]="true">Livro</c-breadcrumb-item>
+      <c-breadcrumb-item [active]="true">Apagar</c-breadcrumb-item>
+    </c-breadcrumb>
+  </div>
+  <div class="col-md-1">
+    <button type="button" cButton color="primary" size="sm" (click)="SetFrmInsert()" *ngIf="bLista && !bConfirmaDelete">Novo</button>
+    <button type="button" cButton color="primary" size="sm" (click)="bLista=true; bListaAuto=false; bForm=false" *ngIf="!bLista && !bConfirmaDelete">Voltar</button>
+  </div>
+</div>
 
 <div class="fade-in" *ngIf="bForm && !bConfirmaDelete">
   <c-card class="mb-4">
     <c-card-header>
-      FORMUMÁRIO
+      <span *ngIf="!bUpdate">INCLUSÃO</span>
+      <span *ngIf="bUpdate">ALTERAÇÃO</span>
     </c-card-header>
     <c-card-body>
       <div class="row">
@@ -79,26 +110,39 @@
 <div class="fade-in" *ngIf="bLista && !bConfirmaDelete">
   <c-card class="mb-4">
     <c-card-header>
-      Livros
-      <div class="row" *ngIf="msgSaved != ''">
-        - {{msgSaved}}
-      </div>
+      LISTAGEM DE LIVROS
     </c-card-header>
     <c-card-body>
       <input class="form-control form-control-sm" [(ngModel)]="req.ValFilter" (change)="Search()" type="text" placeholder="Insira o termo de pesquisa" aria-label=".form-control-sm example"><br>
       <table>
         <tr>
-          <th><span (click)="SetOrder('Titulo')">Título</span></th>
-          <th><span (click)="SetOrder('Autor')">Autor</span></th>
-          <th><span (click)="SetOrder('Editora')">Editora</span></th>
-          <th><span (click)="SetOrder('Ativo')">Ativo</span></th>
+          <th class="cp">
+            <span *ngIf="orderColAnt == 'Titulo' && req.ColDirectrion == 'ASC'">˅</span>
+            <span *ngIf="orderColAnt == 'Titulo' && req.ColDirectrion != 'ASC'">˄</span>
+            <span (click)="SetOrder('Titulo')">Título</span>
+          </th>
+          <th class="cp">
+            <span *ngIf="orderColAnt == 'Autor' && req.ColDirectrion == 'ASC'">˅</span>
+            <span *ngIf="orderColAnt == 'Autor' && req.ColDirectrion != 'ASC'">˄</span>
+            <span (click)="SetOrder('Autor')">Autor</span>
+          </th>
+          <th class="cp">
+            <span *ngIf="orderColAnt == 'Editora' && req.ColDirectrion == 'ASC'">˅</span>
+            <span *ngIf="orderColAnt == 'Editora' && req.ColDirectrion != 'ASC'">˄</span>
+            <span (click)="SetOrder('Editora')">Editora</span>
+          </th>
+          <th class="cp">
+            <span *ngIf="orderColAnt == 'Ativo' && req.ColDirectrion == 'ASC'">˅</span>
+            <span *ngIf="orderColAnt == 'Ativo' && req.ColDirectrion != 'ASC'">˄</span>
+            <span (click)="SetOrder('Ativo')">Ativo</span>
+          </th>
           <th>Ação</th>
         </tr>
         <tr *ngFor ="let item of lista">
           <td>{{item.titulo}}</td>
           <td>{{item.autor}}</td>
           <td>{{item.editora}}</td>
-          <td>{{item.ativo}}</td>
+          <td>{{item.ativo ? 'Sim' : 'Não' }}</td>
           <td nowrap>
             <button type="button" cButton color="primary" size="sm" (click)="SetFrmUpdate(item)">Editar</button>
             <button type="button" cButton color="danger" size="sm" (click)="SetFrmDelete(item)">Apagar</button>
@@ -137,10 +181,7 @@
 <div class="fade-in" *ngIf="bConfirmaDelete">
   <c-card class="mb-4">
     <c-card-header>
-      Confirmar
-      <div class="row" *ngIf="msgSaved != ''">
-        - {{msgSaved}}
-      </div>
+      APAGAR
     </c-card-header>
     <c-card-body>
       <div class="row">

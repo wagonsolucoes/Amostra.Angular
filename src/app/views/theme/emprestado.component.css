@@ -18,6 +18,12 @@ table tr {
   padding: .35em;
 }
 
+table tr:nth-child(even) {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  padding: .35em;
+}
+
 table th,
 table td {
   padding: .625em;
@@ -58,6 +64,12 @@ table th {
 
   table tr {
     border-bottom: 3px solid #ddd;
+    display: block;
+    margin-bottom: .625em;
+  }
+
+  table tr:nth-child(even) {
+    border-bottom: 3px solid #ffffff;
     display: block;
     margin-bottom: .625em;
   }
@@ -107,7 +119,7 @@ table th {
 }
 
 .lblPaginador{
-  width: 300px !important;
+  width: 350px !important;
   float:left !important;
   margin-top: 4px;
 }
@@ -133,7 +145,10 @@ table th {
   text-align: center !important;
 }
 
-
 .mgb{
   margin-bottom: 15px;
+}
+
+.cp{
+  cursor: pointer !important;
 }

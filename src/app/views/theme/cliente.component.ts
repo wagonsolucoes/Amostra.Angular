@@ -28,11 +28,17 @@ export class ClienteComponent implements OnInit {
   ) {
     iconSet.icons = { cilPencil };
   }
+  position = 'top-end';
+  bToast = false;
+  percentage = 0;
+  colorToast = "";
+  headerToast = "sssss";
+  bodyToast = "222222";
   nascimento="";
   tipo:any="CPF";
   cnpj:any="";
   orderCol:any="";
-  orderColAnt:any="";
+  orderColAnt:any="Documento";
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
@@ -98,15 +104,15 @@ export class ClienteComponent implements OnInit {
   selpages:Array<any>=[0];
 
   ngOnInit(): void {
-    this.orderCol="cpf";
-    this.orderColAnt="cpf";
+    this.orderCol="Documento";
+    this.orderColAnt="Documento";
     this.orderDir="asc";
     this.msgSaved = "";
     this.lista=[];
     this.req.Page = 1;
     this.req.Rows = 10;
     this.req.ColDirectrion = "ASC";
-    this.req.ColOrder = "Nome";
+    this.req.ColOrder = "Documento";
     this.req.ValFilter = "";
     this.selrows = [
       { val: "10",  txt: "10 registros" },
@@ -143,7 +149,6 @@ export class ClienteComponent implements OnInit {
 
   Viacep(){
     this.clienteService.Viacep(this.frm.cep).subscribe((res) => {
-      //debugger
       this.frm.endereco = res.logradouro;
       this.frm.bairro = res.bairro;
       this.frm.municipio = res.localidade;
@@ -154,7 +159,6 @@ export class ClienteComponent implements OnInit {
 
   Lista(){
     this.clienteService.Lista(this.req).subscribe((res) => {
-      //debugger
       this.lista = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
@@ -258,7 +262,6 @@ export class ClienteComponent implements OnInit {
       this.req.Page = p;
       this.Lista();
     }
-
   }
 
   SetBtnSave(){
@@ -316,7 +319,7 @@ export class ClienteComponent implements OnInit {
       var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
       if(d === 'Invalid Date')
       {
-        alert("Nascimento inválido. Utilize formato 'dd/mm/aaaa'.");
+        this.toggleToast("Nascimento inválido. Utilize formato 'dd/mm/aaaa'.","","warning");
         inp.focus();
         inp.select();
       }
@@ -340,7 +343,6 @@ export class ClienteComponent implements OnInit {
   }
 
   Salvar(){
-    //debugger
     if(this.bUpdate){
       this.Update();
     }
@@ -381,12 +383,10 @@ export class ClienteComponent implements OnInit {
   }
 
   Insert(){
-    //debugger
     this.frm.idade = 0;
     this.frm.ativo = true;
     this.clienteService.Insert(this.frm).subscribe((res) => {
-      //debugger
-      this.msgSaved="Inserido com sucesso."
+      this.toggleToast("Inserido com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -401,10 +401,8 @@ export class ClienteComponent implements OnInit {
   Update(){
     this.frm.idade = 0;
     this.frm.ativo = true;
-    debugger
     this.clienteService.Update(this.frm).subscribe((res) => {
-      debugger
-      this.msgSaved="Alterado com sucesso."
+      this.toggleToast("Alterado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -417,9 +415,8 @@ export class ClienteComponent implements OnInit {
   }
 
   Apagar(){
-    //debugger
     this.clienteService.Delete(this.frmDel).subscribe((res) => {
-      this.msgSaved="Apagado com sucesso."
+      this.toggleToast("Apagado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -429,7 +426,6 @@ export class ClienteComponent implements OnInit {
   }
 
   Cancelar(){
-    //debugger
     this.bLista=true;
     this.bConfirmaDelete=false;
     this.frmDel = {} as ClienteViewModel;
@@ -439,18 +435,6 @@ export class ClienteComponent implements OnInit {
     this.frmDel = obj;
     this.bConfirmaDelete=true;
     this.bLista=false;
-  }
-
-  timeLeft: number = 5;
-
-  startTimer() {
-    this.interval = setInterval(() => {
-      if(this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.pauseTimer();
-      }
-    },1000)
   }
 
   pauseTimer() {
@@ -466,4 +450,25 @@ export class ClienteComponent implements OnInit {
     this.bModalAuto = event;
   }
 
+  toggleToast(headerToast: string = "", bodyToast: string = "", colorToast: string = "") {
+    this.headerToast = headerToast;
+    this.bodyToast = bodyToast;
+    this.colorToast = colorToast;
+    if(this.bToast){
+      this.bToast=false;
+      this.bToast=true;
+    }
+    else{
+      this.bToast = !this.bToast;
+    }
+  }
+
+  onVisibleChange($event: boolean) {
+    this.bToast = $event;
+    this.percentage = !this.bToast ? 0 : this.percentage;
+  }
+
+  onTimerChange($event: number) {
+    this.percentage = $event * 25;
+  }
 }

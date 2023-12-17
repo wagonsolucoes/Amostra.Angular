@@ -12,27 +12,14 @@ export let navItems: INavData[] = [
   },
   {
     name: 'Cliente',
-    url: '/theme/cliente',
-    iconComponent: { name: 'cil-people' }
+    url: '/theme/cliente'
   },
   {
     name: 'Emprestado',
-    url: '/theme/emprestado',
-    iconComponent: { name: 'cil-people' }
+    url: '/theme/emprestado'
   },
   {
     name: 'Livro',
-    url: '/theme/livro',
-    iconComponent: { name: 'cil-people' }
-  },
-  {
-    name: 'Maps',
-    url: '/theme/maps',
-    iconComponent: { name: 'cil-people' }
-  },
-  {
-    name: 'Logout',
-    url: '/theme/logout',
-    iconComponent: { name: 'cil-star' },
-  },
+    url: '/theme/livro'
+  }
 ];

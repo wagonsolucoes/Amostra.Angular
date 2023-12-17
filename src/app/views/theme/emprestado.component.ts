@@ -34,13 +34,19 @@ JSON: any;
   ) {
     iconSet.icons = { cilPencil };
   }
+  position = 'top-end';
+  bToast = false;
+  percentage = 0;
+  colorToast = "";
+  headerToast = "";
+  bodyToast = "";
   dh:any;
   dhDevolucao:any;
   nascimento="";
   tipo:any="CPF";
   cnpj:any="";
   orderCol:any="";
-  orderColAnt:any="";
+  orderColAnt:any="Cliente";
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
@@ -78,8 +84,8 @@ JSON: any;
   selpages:Array<any>=[0];
 
   ngOnInit(): void {
-    this.orderCol="cpf";
-    this.orderColAnt="cpf";
+    this.orderCol="Cliente";
+    this.orderColAnt="Cliente";
     this.orderDir="asc";
     this.msgSaved = "";
     this.lista=[];
@@ -271,7 +277,7 @@ JSON: any;
       var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
       if(d === 'Invalid Date')
       {
-        alert("Data de devolução inválida. Utilize formato 'dd/mm/aaaa'.");
+        this.toggleToast("Data de devolução inválida. Utilize formato 'dd/mm/aaaa'.","","warning");
         inp.focus();
         inp.select();
       }
@@ -362,7 +368,7 @@ JSON: any;
     this.frm.ativo = true;
     this.emprestadoService.Insert(this.frm).subscribe((res) => {
       //debugger
-      this.msgSaved="Inserido com sucesso."
+      this.toggleToast("Inserido com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -380,7 +386,7 @@ JSON: any;
     debugger
     this.emprestadoService.Update(this.frm).subscribe((res) => {
       debugger
-      this.msgSaved="Alterado com sucesso."
+      this.toggleToast("Alterado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -395,7 +401,7 @@ JSON: any;
   Apagar(){
     //debugger
     this.emprestadoService.Delete(this.frmDel).subscribe((res) => {
-      this.msgSaved="Apagado com sucesso."
+      this.toggleToast("Apagado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -440,6 +446,22 @@ JSON: any;
 
   handleLiveDemoChange2(event: any) {
     this.bModalAuto = event;
+  }
+
+  toggleToast(headerToast: string = "", bodyToast: string = "", colorToast: string = "") {
+    this.headerToast = headerToast;
+    this.bodyToast = bodyToast;
+    this.colorToast = colorToast;
+    this.bToast = !this.bToast;
+  }
+
+  onVisibleChange($event: boolean) {
+    this.bToast = $event;
+    this.percentage = !this.bToast ? 0 : this.percentage;
+  }
+
+  onTimerChange($event: number) {
+    this.percentage = $event * 25;
   }
 
 }

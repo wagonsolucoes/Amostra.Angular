@@ -28,13 +28,19 @@ export class LivroComponent implements OnInit {
   ) {
     iconSet.icons = { cilPencil };
   }
+  position = 'top-end';
+  bToast = false;
+  percentage = 0;
+  colorToast = "";
+  headerToast = "";
+  bodyToast = "";
   dhCompra = "";
   dhExtravio = "";
   nascimento="";
   tipo:any="CPF";
   cnpj:any="";
   orderCol:any="";
-  orderColAnt:any="";
+  orderColAnt:any="Titulo";
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
@@ -70,8 +76,8 @@ export class LivroComponent implements OnInit {
   selpages:Array<any>=[0];
 
   ngOnInit(): void {
-    this.orderCol="cpf";
-    this.orderColAnt="cpf";
+    this.orderCol="Titulo";
+    this.orderColAnt="Titulo";
     this.orderDir="asc";
     this.msgSaved = "";
     this.lista=[];
@@ -259,7 +265,7 @@ export class LivroComponent implements OnInit {
       var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
       if(d === 'Invalid Date')
       {
-        alert("Data da compra inválida. Utilize formato 'dd/mm/aaaa'.");
+        this.toggleToast("Data da compra inválida. Utilize formato 'dd/mm/aaaa'.","","warning");
         inp.focus();
         inp.select();
       }
@@ -287,7 +293,7 @@ export class LivroComponent implements OnInit {
       var d = new Date(yyyy + "-" + mm + "-" + dd).toString();
       if(d === 'Invalid Date')
       {
-        alert("Data de extravio inválida. Utilize formato 'dd/mm/aaaa'.");
+        this.toggleToast("Data de extravio inválida. Utilize formato 'dd/mm/aaaa'.","","warning");
         inp.focus();
         inp.select();
       }
@@ -392,7 +398,7 @@ export class LivroComponent implements OnInit {
     this.frm.ativo = true;
     this.livroService.Insert(this.frm).subscribe((res) => {
       debugger
-      this.msgSaved="Inserido com sucesso."
+      this.toggleToast("Inserido com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -409,7 +415,7 @@ export class LivroComponent implements OnInit {
     debugger
     this.livroService.Update(this.frm).subscribe((res) => {
       debugger
-      this.msgSaved="Alterado com sucesso."
+      this.toggleToast("Alterado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -424,7 +430,7 @@ export class LivroComponent implements OnInit {
   Apagar(){
     //debugger
     this.livroService.Delete(this.frmDel).subscribe((res) => {
-      this.msgSaved="Apagado com sucesso."
+      this.toggleToast("Apagado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
       this.bLista=true;
@@ -469,6 +475,28 @@ export class LivroComponent implements OnInit {
 
   handleLiveDemoChange2(event: any) {
     this.bModalAuto = event;
+  }
+
+  toggleToast(headerToast: string = "", bodyToast: string = "", colorToast: string = "") {
+    this.headerToast = headerToast;
+    this.bodyToast = bodyToast;
+    this.colorToast = colorToast;
+    if(this.bToast){
+      this.bToast=false;
+      this.bToast=true;
+    }
+    else{
+      this.bToast = !this.bToast;
+    }
+  }
+
+  onVisibleChange($event: boolean) {
+    this.bToast = $event;
+    this.percentage = !this.bToast ? 0 : this.percentage;
+  }
+
+  onTimerChange($event: number) {
+    this.percentage = $event * 25;
   }
 
 }
