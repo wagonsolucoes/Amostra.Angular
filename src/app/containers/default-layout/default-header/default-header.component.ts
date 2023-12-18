@@ -35,11 +35,10 @@ export class DefaultHeaderComponent extends HeaderComponent {
   usr:string="rh@targetsoftware.com.br";
   pwd:string="Targetsoftware2023@";
   msgErro:string="";
-  Logar(){    
-    const headers = { 'content-type': 'application/json', 'Accept':'*/*'}  
+  Logar(){
+    const headers = { 'content-type': 'application/json', 'Accept':'*/*'}
     const body=JSON.stringify(this.req);
     this.http.post<any>('http://localhost:33755/Cliente/ListaClientes', body, {'headers':headers}).subscribe(data => {
-      //debugger
       if(data.statusCode == 200){
       }
       else{

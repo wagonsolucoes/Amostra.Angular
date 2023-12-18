@@ -118,7 +118,6 @@ export class LivroComponent implements OnInit {
   Lista(){
     this.req.ColOrder = "Titulo";
     this.livroService.Lista(this.req).subscribe((res) => {
-      debugger
       this.lista = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
@@ -252,7 +251,6 @@ export class LivroComponent implements OnInit {
     }
   }
   ValidateDateCompra(){
-    debugger
     var inp = (<HTMLInputElement>document.getElementById("txtDhCompra"));
     if(this.dhCompra.length == 8){
       var dd="";
@@ -280,7 +278,6 @@ export class LivroComponent implements OnInit {
     }
   }
   ValidateDateExtravio(){
-    debugger
     var inp = (<HTMLInputElement>document.getElementById("txtDhExtravio"));
     if(this.dhExtravio.length == 8){
       var dd="";
@@ -317,7 +314,6 @@ export class LivroComponent implements OnInit {
   }
 
   Salvar(){
-    //debugger
     if(this.bUpdate){
       this.Update();
     }
@@ -328,7 +324,6 @@ export class LivroComponent implements OnInit {
   }
 
   SetFrmUpdate(obj:any){
-    debugger
     this.frm.id = obj.id;
     this.frm.titulo = obj.titulo;
     this.frm.prefacio = obj.prefacio;
@@ -380,7 +375,6 @@ export class LivroComponent implements OnInit {
   }
 
   Insert(){
-    debugger
     this.frm.extraviado = false;
     if(this.frm.dhExtravio != null){
       this.frm.extraviado = true;
@@ -397,7 +391,6 @@ export class LivroComponent implements OnInit {
     this.frm.emprestado=false;
     this.frm.ativo = true;
     this.livroService.Insert(this.frm).subscribe((res) => {
-      debugger
       this.toggleToast("Inserido com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
@@ -412,9 +405,7 @@ export class LivroComponent implements OnInit {
 
   Update(){
     this.frm.ativo = true;
-    debugger
     this.livroService.Update(this.frm).subscribe((res) => {
-      debugger
       this.toggleToast("Alterado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
@@ -428,7 +419,6 @@ export class LivroComponent implements OnInit {
   }
 
   Apagar(){
-    //debugger
     this.livroService.Delete(this.frmDel).subscribe((res) => {
       this.toggleToast("Apagado com sucesso.","","success");
       this.req.Page = 1;
@@ -440,7 +430,6 @@ export class LivroComponent implements OnInit {
   }
 
   Cancelar(){
-    //debugger
     this.bLista=true;
     this.bConfirmaDelete=false;
     this.frmDel = {} as LivroViewModel;

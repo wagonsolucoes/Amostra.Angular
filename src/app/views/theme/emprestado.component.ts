@@ -134,7 +134,6 @@ JSON: any;
 
   DdlCliente(){
     this.clienteService.DdlCliente().subscribe((res) => {
-      debugger
       this.ddlCliente = res;
     })
   }

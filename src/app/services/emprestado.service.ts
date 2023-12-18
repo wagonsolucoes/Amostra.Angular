@@ -24,7 +24,6 @@ export class EmprestadoService {
   ) {}
 
   Lista(req: RequestListEmprestadoInterface): Observable<any> {
-      debugger
       if(req.Page == 1){
         var IniciaEm = 0;
       }
@@ -67,7 +66,6 @@ export class EmprestadoService {
   }
 
   Delete(req: EmprestadoViewModel): Observable<any> {
-      debugger
       return this.http
       .delete<any>(
           domain + '/api/Emprestado/Delete/' + req.id,
