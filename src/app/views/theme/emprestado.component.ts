@@ -50,9 +50,10 @@ JSON: any;
   orderDir:any="";
   interval:any;
   msgSaved:any = "";
-  lista:Array<EmprestadoViewModel>=[];
+  listaEmprestado:Array<EmprestadoViewModel>=[];
   ddlCliente:Array<SelectDto>=[];
   ddlLivro:Array<SelectDto>=[];
+  ddlLivroFiltered:Array<SelectDto>=[];
   frm = {} as EmprestadoViewModel;
   frmDel = {} as EmprestadoViewModel;
   req = {} as RequestListEmprestadoInterface;
@@ -88,7 +89,6 @@ JSON: any;
     this.orderColAnt="Cliente";
     this.orderDir="asc";
     this.msgSaved = "";
-    this.lista=[];
     this.req.Page = 1;
     this.req.Rows = 10;
     this.req.ColDirectrion = "ASC";
@@ -100,8 +100,6 @@ JSON: any;
       { val: "100", txt: "100 registros" }
     ];
     this.Lista();
-    this.DdlCliente();
-    this.DdlLivro();
   }
 
   SetOrder(col:any){
@@ -125,24 +123,26 @@ JSON: any;
   }
 
   Lista(){
-    debugger
     this.emprestadoService.Lista(this.req).subscribe((res) => {
-      debugger
-      this.lista = res.lst;
+
+      this.listaEmprestado = res.lst;
       this.ttRows2 = res.ttRows;
       this.PopulaSelPages(res.ttRows);
+      this.DdlLivro();
     })
   }
 
   DdlCliente(){
     this.clienteService.DdlCliente().subscribe((res) => {
+      debugger
       this.ddlCliente = res;
     })
   }
 
   DdlLivro(){
     this.livroService.DdlLivro().subscribe((res) => {
-      this.ddlLivro = res;
+      this.ddlLivro = res.result;
+      this.DdlCliente();
     })
   }
 
@@ -155,6 +155,7 @@ JSON: any;
   }
 
   PopulaSelPages(ttRows:any){
+
     var r = parseInt(this.req.Rows);
     this.ttRows = r;
     var tt = Math.round(ttRows / r);
@@ -189,6 +190,7 @@ JSON: any;
   }
 
   SetLblPaginador(){
+
     var p = parseInt(this.req.Page);
     var nRows = parseInt(this.req.Rows);
     if(p == 1){
@@ -301,7 +303,7 @@ JSON: any;
   }
 
   Salvar(){
-    //debugger
+    //
     if(this.bUpdate){
       this.Update();
     }
@@ -332,7 +334,7 @@ JSON: any;
     var year = dt.year();
     this.dh = day + "/" + mm + "/" + year;
 
-    debugger
+
     var d = "";
     if(obj.dhDevolucao != null){
       var dt = moment(obj.dhDevolucao.toString());
@@ -363,14 +365,14 @@ JSON: any;
   }
 
   Insert(){
-    //debugger
     this.frm.diasEmprestado = 0;
     this.frm.ativo = true;
     this.emprestadoService.Insert(this.frm).subscribe((res) => {
-      //debugger
+
       this.toggleToast("Inserido com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
+      this.DdlLivro();
       this.bLista=true;
       this.bForm=false;
       this.bConfirmaDelete=false;
@@ -383,9 +385,9 @@ JSON: any;
   Update(){
     this.frm.diasEmprestado = 0;
     this.frm.ativo = true;
-    debugger
+
     this.emprestadoService.Update(this.frm).subscribe((res) => {
-      debugger
+
       this.toggleToast("Alterado com sucesso.","","success");
       this.req.Page = 1;
       this.Lista();
@@ -399,7 +401,7 @@ JSON: any;
   }
 
   Apagar(){
-    //debugger
+    //
     this.emprestadoService.Delete(this.frmDel).subscribe((res) => {
       this.toggleToast("Apagado com sucesso.","","success");
       this.req.Page = 1;
@@ -411,7 +413,7 @@ JSON: any;
   }
 
   Cancelar(){
-    //debugger
+    //
     this.bLista=true;
     this.bConfirmaDelete=false;
     this.frmDel = {} as EmprestadoViewModel;

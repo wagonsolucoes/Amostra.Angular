@@ -62,7 +62,7 @@
         </div>
         <div class="col-sm-3">
           <select id="frmSelLivro" class="w100p" [(ngModel)]="frm.idLivro" (change)="SetBtnSave()">
-            <option *ngFor="let opt of ddlLivro" value="{{opt.id}}">{{opt.txt}}</option>
+            <option *ngFor="let opt of ddlLivro" value="{{opt.id}}">{{opt.bEmprestado == true ? 'Emprestado - ' : ''}}{{opt.txt}}</option>
           </select>
         </div>
       </div>
@@ -140,7 +140,7 @@
           </th>
           <th>Ação</th>
         </tr>
-        <tr *ngFor ="let item of lista">
+        <tr *ngFor ="let item of listaEmprestado">
           <td>{{item.cliente.nome}}</td>
           <td>{{item.livro.titulo}}</td>
           <td>{{item.dh | date: 'dd/MM/yyyy'}}</td>

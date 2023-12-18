@@ -136,6 +136,7 @@
             <span *ngIf="orderColAnt == 'Ativo' && req.ColDirectrion != 'ASC'">˄</span>
             <span (click)="SetOrder('Ativo')">Ativo</span>
           </th>
+          <th>Emprestado</th>
           <th>Ação</th>
         </tr>
         <tr *ngFor ="let item of lista">
@@ -143,6 +144,7 @@
           <td>{{item.autor}}</td>
           <td>{{item.editora}}</td>
           <td>{{item.ativo ? 'Sim' : 'Não' }}</td>
+          <td>{{item.emprestado ? 'Sim' : 'Não' }}</td>
           <td nowrap>
             <button type="button" cButton color="primary" size="sm" (click)="SetFrmUpdate(item)">Editar</button>
             <button type="button" cButton color="danger" size="sm" (click)="SetFrmDelete(item)">Apagar</button>
